@@ -1,12 +1,13 @@
 export interface User {
   id: string;
-  email: string;
   name: string;
+  email: string;
+  password: string;
+  image?: string;
 }
 
 export interface AuthState {
   user: User | null;
-  token?: string | null;
   loading: boolean;
   error: string | null;
 }

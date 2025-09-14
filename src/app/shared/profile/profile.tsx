@@ -7,6 +7,8 @@ import React, { useState, useRef } from "react";
 import avatar from "@/app/assets/profile.png";
 import { FaCamera, FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import api from "@/app/lib/axios";
+import { useAppDispatch } from "@/app/hooks/hooks";
+import { setUser } from "@/app/redux/features/auth/authSlice";
 
 // Main Profile Page Component
 const Profile = () => {
@@ -24,6 +26,9 @@ const Profile = () => {
   // State for validation errors
   const [errors, setErrors] = useState<FormErrors>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // redux slice
+  const dispatch = useAppDispatch();
 
   // Handle image selection
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +67,7 @@ const Profile = () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
-    formData.append("currentPassword", currentPassword);
+    formData.append("password", currentPassword);
 
     if (image) {
       formData.append("image", image); // ✅ safe only if image exists
@@ -70,6 +75,7 @@ const Profile = () => {
 
     try {
       const updated = await api.put("/user/profile", formData);
+      dispatch(setUser(updated.data));
 
       console.log("Profile updated:", updated.data);
     } catch (error: any) {
