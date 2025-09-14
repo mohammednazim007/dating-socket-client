@@ -34,5 +34,42 @@ export const signUpSchema = z
     path: ["confirmPassword"],
   });
 
+// Zod Schema for validation
+export const profileSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { message: "Name must be at least 2 characters long." }),
+    email: z.string().email({ message: "Invalid email address." }),
+    currentPassword: z.string().optional(),
+    newPassword: z
+      .string()
+      .min(8, { message: "New password must be at least 8 characters long." })
+      .optional()
+      .or(z.literal("")),
+    confirmPassword: z.string().optional(),
+    image: z.instanceof(File).optional(),
+  })
+  .refine(
+    (data) => {
+      // If a new password is entered, the current password is required
+      if (data.newPassword && !data.currentPassword) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Current password is required to set a new one.",
+      path: ["currentPassword"],
+    }
+  )
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
 export type SignInFormData = z.infer<typeof signInSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
+
+export type FormData = z.infer<typeof profileSchema>;
+export type FormErrors = z.ZodFormattedError<FormData> | null;
