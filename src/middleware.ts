@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Public routes (accessible without login)
-const publicPaths: string[] = ["/", "/auth/signin", "/auth/signup"];
+const publicPaths: string[] = ["/auth/signin", "/auth/signup"];
 
 function isPublicPath(path: string): boolean {
   return publicPaths.some((p) => path === p || path.startsWith(p + "/"));
@@ -11,26 +11,29 @@ function isPublicPath(path: string): boolean {
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  // Read token from cookies
   const token = req.cookies.get("authToken")?.value;
 
-  // If user not logged in and tries private route → redirect to login with `redirect` param
+  // If user not logged in and tries private route → redirect to signin
   if (!isPublicPath(pathname) && !token) {
-    const loginUrl = new URL("/login", req.url);
-    loginUrl.searchParams.set("redirect", pathname); // store the original route
-    return NextResponse.redirect(loginUrl);
+    const signinUrl = new URL("/auth/signin", req.url);
+
+    // Only add redirect param if it’s not already inside /auth
+    if (!pathname.startsWith("/auth")) {
+      signinUrl.searchParams.set("redirect", pathname);
+    }
+
+    return NextResponse.redirect(signinUrl);
   }
 
-  // If logged in and trying to access login/register → redirect to dashboard
-  if (token && (pathname === "/login" || pathname === "/register")) {
+  // If logged in and tries to access signin/signup → redirect to dashboard
+  if (token && (pathname === "/auth/signin" || pathname === "/auth/signup")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
 
-// Apply middleware to all routes except _next, api, static, etc.
+// Apply middleware everywhere except for _next, api, static files
 export const config = {
   matcher: ["/((?!_next|api|static|favicon.ico).*)"],
 };

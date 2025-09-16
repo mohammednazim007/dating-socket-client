@@ -1,9 +1,9 @@
-import Home from "./components/Home/Home";
+import MessengerLayout from "./components/MessengerLayout/MessengerLayout";
 
 const page = () => {
   return (
     <div>
-      <Home />
+      <MessengerLayout />
     </div>
   );
 };

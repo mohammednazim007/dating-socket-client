@@ -3,6 +3,7 @@ import { User, AuthState } from "@/app/types/auth";
 
 const initialState: AuthState = {
   user: null,
+  activeUser: null,
   loading: false,
   error: null,
 };
@@ -13,6 +14,11 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
+      state.error = null;
+    },
+
+    setActiveUser: (state, action: PayloadAction<User>) => {
+      state.activeUser = action.payload;
       state.error = null;
     },
 

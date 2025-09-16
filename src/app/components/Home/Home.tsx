@@ -7,7 +7,7 @@ const Home = () => {
   const user = useAppSelector((state: RootState) => state.auth);
 
   console.log(user);
-  return <div></div>;
+  return <div>Home page</div>;
 };
 
 export default Home;
