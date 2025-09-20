@@ -10,6 +10,7 @@ const Sidebar = () => {
   const user = useAppSelector((state: RootState) => state.auth);
   const { activeFriendUsers } = useFriendListUser(user?.user?.id || "");
   const dispatch = useAppDispatch();
+  console.log("user ", user);
 
   return (
     <div className="w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col">

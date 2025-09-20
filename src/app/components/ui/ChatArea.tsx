@@ -5,14 +5,14 @@ import React from "react";
 import UserProfile from "./User-profile";
 
 const ChatArea = () => {
-  const user = useAppSelector((state: RootState) => state.auth);
+  const user = useAppSelector((state: RootState) => state.friend);
 
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-[#1e293b]">
         <div className="flex items-center gap-x-2">
-          <UserProfile currentUser={user?.user} isDisable={true} />
+          <UserProfile currentUser={user?.activeUser} isDisable={true} />
           <span>
             <p className="font-semibold">Theron Trump</p>
             <p className="text-xs text-gray-400">Last seen 10:20pm</p>
