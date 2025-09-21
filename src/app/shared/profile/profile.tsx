@@ -86,10 +86,17 @@ const Profile = () => {
         formData.append("image", values.image);
       }
 
-      // const updated = await api.put("/user/profile", formData);
+      console.log("Profile updated x", values);
+      const updated = await api.put("/user/profile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       // dispatch(setUser(updated.data));
 
       console.log("Profile updated:", values);
+      console.log("Server response:", updated.data);
+
       resetForm();
     } catch (error: any) {
       console.error(
