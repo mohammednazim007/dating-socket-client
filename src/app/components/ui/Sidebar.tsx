@@ -11,9 +11,6 @@ const Sidebar = () => {
   const { activeFriendUsers } = useFriendListUser(currentUser?.user?._id || "");
   const dispatch = useAppDispatch();
 
-  console.log("current user ", currentUser);
-  console.log("active user", activeFriendUsers);
-
   return (
     <div className="w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col">
       {/* Tabs */}

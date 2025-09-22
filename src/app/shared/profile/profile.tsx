@@ -48,6 +48,8 @@ const Profile = () => {
   const currentUser = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
 
+  console.log("Current User:", currentUser);
+
   // local preview state for image
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,27 +82,36 @@ const Profile = () => {
   ) => {
     try {
       const formData = new FormData();
+
+      // ✅ Always include name
       formData.append("name", values.name);
-      formData.append("password", values.currentPassword);
+
+      // ✅ If changing password, send both current + new
+      if (values.currentPassword && values.newPassword) {
+        formData.append("currentPassword", values.currentPassword);
+        formData.append("newPassword", values.newPassword);
+      }
+
+      // ✅ If image selected, append it
       if (values.image) {
         formData.append("image", values.image);
       }
 
-      console.log("Profile updated x", values);
-      const updated = await api.put("/user/profile", formData, {
+      const response = await api.post("/user/profile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        withCredentials: true, // if using cookies for auth
       });
-      // dispatch(setUser(updated.data));
 
-      console.log("Profile updated:", values);
-      console.log("Server response:", updated.data);
+      // Update Redux store
+      dispatch(setUser(response.data.user));
 
+      console.log("✅ Profile updated:", response.data);
       resetForm();
     } catch (error: any) {
       console.error(
-        "Error updating profile:",
+        "❌ Error updating profile:",
         error.response?.data || error.message
       );
     }

@@ -26,6 +26,7 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true);
+
     try {
       const response = await api.post(
         "/user/register",
@@ -33,19 +34,26 @@ const SignUpPage = () => {
           name: data.name,
           email: data.email,
           password: data.password,
+          avatar: "",
         },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      if (response.status === 201) {
-        router.push("/auth/signin");
+      if (response.status === 201) router.push("/auth/signin");
+    } catch (err: any) {
+      const fields = err.response?.data?.fields;
+
+      if (fields?.length) {
+        // Map backend errors to Formik fields
+        fields.forEach((f: { field: string; message: string }) =>
+          setError(f.field as keyof SignUpFormData, { message: f.message })
+        );
+      } else {
+        // Fallback to general error
+        setError("root", {
+          message: err.response?.data?.message || "Something went wrong",
+        });
       }
-    } catch {
-      setError("root", {
-        message: "Failed to create account. Please try again.",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -137,11 +145,11 @@ const SignUpPage = () => {
                   {errors.password.message}
                 </p>
               )}
-              {password && password.length >= 6 && (
+              {/* {password && password.length >= 6 && (
                 <p className="mt-1 text-sm text-green-600">
                   Password looks good!
                 </p>
-              )}
+              )} */}
             </div>
 
             <div>

@@ -25,7 +25,7 @@ const FriendsProfile = ({ currentFriends, isDisable }: UserProfileProps) => {
       <Image
         width={40}
         height={40}
-        src={currentFriends?.image || avatar.src}
+        src={currentFriends?.avatar || avatar.src}
         alt={currentFriends?.name || "User Avatar"}
         className="w-full h-full object-cover"
       />

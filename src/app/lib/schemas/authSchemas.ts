@@ -1,4 +1,7 @@
 import { z } from "zod";
+// Regex patterns
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
 
 export const signInSchema = z.object({
   email: z
@@ -17,16 +20,22 @@ export const signUpSchema = z
       .string()
       .min(1, "Name is required")
       .min(2, "Name must be at least 2 characters")
-      .max(50, "Name must be less than 50 characters"),
+      .max(30, "Name must be less than 50 characters"),
     email: z
       .string()
       .min(1, "Email is required")
-      .email("Please enter a valid email address"),
+      .email("Please enter a valid email address")
+      .regex(emailRegex, "Please enter a valid email address"),
+    avatar: z.string().optional(),
     password: z
       .string()
       .min(1, "Password is required")
       .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must be less than 100 characters"),
+      .max(10, "Password must be less than 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must contain at least one uppercase letter and one number"
+      ),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
