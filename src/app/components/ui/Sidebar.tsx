@@ -7,15 +7,27 @@ import useFriendListUser from "@/app/hooks/useActiveUser";
 import { setActiveUser } from "@/app/redux/features/friend-slice/friendSlice";
 import Image from "next/image";
 
-const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+const Sidebar = ({ onClose }: SidebarProps) => {
   const currentUser = useAppSelector((state: RootState) => state.auth);
   const { activeFriendUsers } = useFriendListUser(currentUser?.user?._id || "");
   const dispatch = useAppDispatch();
 
-  console.log("currentUser:", currentUser);
-
   return (
-    <div className="w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col">
+    <div className="w-72 md:w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col h-full">
+      {/* Mobile Close Button */}
+      <div className="md:hidden flex justify-end p-2">
+        <button
+          onClick={onClose}
+          className="px-3 py-1 text-sm rounded-lg bg-[#334155] hover:bg-[#475569]"
+        >
+          ✕
+        </button>
+      </div>
+
       {/* Tabs */}
       <div className="flex justify-around py-4 border-b border-gray-600">
         <button className="text-blue-400 font-semibold">Direct</button>
@@ -38,7 +50,7 @@ const Sidebar = () => {
           activeFriendUsers.map((activeFriend) => (
             <div
               onClick={() => dispatch(setActiveUser(activeFriend))}
-              key={activeFriend._id} // better to use unique id instead of index
+              key={activeFriend._id}
               className="flex items-center gap-3 p-3 hover:bg-[#334155] cursor-pointer"
             >
               {/* Avatar */}
@@ -63,12 +75,12 @@ const Sidebar = () => {
                 <p className="text-sm font-semibold">
                   {activeFriend?.name || "Unknown User"}
                 </p>
-                <p className="text-xs text-gray-400 hover:tracking-tight transition-all">
+                <p className="text-xs text-gray-400 transition-all">
                   View chat
                 </p>
               </div>
 
-              {/* Time (placeholder for now) */}
+              {/* Time placeholder */}
               <span className="text-xs text-gray-400">10:00pm</span>
             </div>
           ))
@@ -80,10 +92,7 @@ const Sidebar = () => {
       {/* Profile + Sign Out */}
       {currentUser?.user && (
         <div className="p-2 border-t border-gray-700 flex items-center justify-between gap-2">
-          {/* Profile (Avatar Button) */}
           <UserProfile currentUser={currentUser.user} isDisable={false} />
-
-          {/* Sign Out (Circle Icon Button) */}
           <SignOutButton />
         </div>
       )}

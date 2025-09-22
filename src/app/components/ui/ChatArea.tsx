@@ -2,11 +2,14 @@
 import { useAppSelector } from "@/app/hooks/hooks";
 import { RootState } from "@/app/redux/store";
 import React from "react";
-import UserProfile from "./User-profile";
 import MessageArea from "./Message-area";
 import FriendsProfile from "./FriendsProfile";
 
-const ChatArea = () => {
+interface ChatAreaProps {
+  onToggleSidebar: () => void;
+}
+
+const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
   const friends = useAppSelector((state: RootState) => state.friend);
 
   return (
@@ -14,6 +17,14 @@ const ChatArea = () => {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-[#1e293b]">
         <div className="flex items-center gap-x-2">
+          {/* Mobile toggle button */}
+          <button
+            onClick={onToggleSidebar}
+            className="md:hidden px-3 py-1 rounded-lg bg-[#334155] hover:bg-[#475569]"
+          >
+            ☰
+          </button>
+
           <FriendsProfile
             currentFriends={friends?.activeUser}
             isDisable={true}
