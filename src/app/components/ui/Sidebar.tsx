@@ -5,11 +5,14 @@ import SignOutButton from "./Sign-out";
 import UserProfile from "../ui/User-profile";
 import useFriendListUser from "@/app/hooks/useActiveUser";
 import { setActiveUser } from "@/app/redux/features/friend-slice/friendSlice";
+import Image from "next/image";
 
 const Sidebar = () => {
   const currentUser = useAppSelector((state: RootState) => state.auth);
   const { activeFriendUsers } = useFriendListUser(currentUser?.user?._id || "");
   const dispatch = useAppDispatch();
+
+  console.log("currentUser:", currentUser);
 
   return (
     <div className="w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col">
@@ -39,8 +42,20 @@ const Sidebar = () => {
               className="flex items-center gap-3 p-3 hover:bg-[#334155] cursor-pointer"
             >
               {/* Avatar */}
-              <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center text-white">
-                {activeFriend?.name?.charAt(0) || "U"}
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                {activeFriend?.avatar ? (
+                  <Image
+                    width={40}
+                    height={40}
+                    src={activeFriend.avatar}
+                    alt="Avatar"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center text-white">
+                    {activeFriend?.name?.charAt(0) || "U"}
+                  </div>
+                )}
               </div>
 
               {/* User Info */}
@@ -48,8 +63,8 @@ const Sidebar = () => {
                 <p className="text-sm font-semibold">
                   {activeFriend?.name || "Unknown User"}
                 </p>
-                <p className="text-xs text-gray-400">
-                  {activeFriend?.email || "No email available"}
+                <p className="text-xs text-gray-400 hover:tracking-tight transition-all">
+                  View chat
                 </p>
               </div>
 

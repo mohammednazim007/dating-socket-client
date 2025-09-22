@@ -33,7 +33,7 @@ const UserProfile = ({ currentUser, isDisable }: UserProfileProps) => {
         />
       </button>
       <span>
-        <h4 className="truncate capitalize">mohammed nazim</h4>
+        <h4 className="truncate capitalize">{currentUser?.name}</h4>
         <p className="text-xs text-gray-400">View Profile</p>
       </span>
     </div>
