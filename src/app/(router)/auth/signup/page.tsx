@@ -4,12 +4,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { signUpSchema, SignUpFormData } from "@/app/lib/schemas/authSchemas";
-import api from "@/app/lib/axios";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import api from "@/app/lib/axios";
+import { signUpSchema, SignUpFormData } from "@/app/lib/schemas/authSchemas";
 
 const SignUpPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const router = useRouter();
 
   const {
@@ -17,16 +22,12 @@ const SignUpPage = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    watch,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
 
-  const password = watch("password");
-
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true);
-
     try {
       const response = await api.post(
         "/user/register",
@@ -42,14 +43,11 @@ const SignUpPage = () => {
       if (response.status === 201) router.push("/auth/signin");
     } catch (err: any) {
       const fields = err.response?.data?.fields;
-
       if (fields?.length) {
-        // Map backend errors to Formik fields
         fields.forEach((f: { field: string; message: string }) =>
           setError(f.field as keyof SignUpFormData, { message: f.message })
         );
       } else {
-        // Fallback to general error
         setError("root", {
           message: err.response?.data?.message || "Something went wrong",
         });
@@ -60,193 +58,183 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md bg-slate-800 text-slate-100 rounded-2xl shadow-2xl p-8"
+      >
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-white">Create Account</h2>
+          <p className="mt-2 text-sm text-slate-400">
             Or{" "}
             <Link
               href="/auth/signin"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="text-indigo-400 hover:text-indigo-300"
             >
               sign in to your existing account
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Full Name
-              </label>
-              <input
-                {...register("name")}
-                type="text"
-                autoComplete="name"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.name ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="Enter your full name"
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email Address
-              </label>
-              <input
-                {...register("email")}
-                type="email"
-                autoComplete="email"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="Enter your email address"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+        {/* Error */}
+        {errors.root && (
+          <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400 text-sm mb-4">
+            {errors.root.message}
+          </div>
+        )}
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                {...register("password")}
-                type="password"
-                autoComplete="new-password"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.password ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="Create a password"
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-              {/* {password && password.length >= 6 && (
-                <p className="mt-1 text-sm text-green-600">
-                  Password looks good!
-                </p>
-              )} */}
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm Password
-              </label>
-              <input
-                {...register("confirmPassword")}
-                type="password"
-                autoComplete="new-password"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.confirmPassword ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder="Confirm your password"
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
+        {/* Form */}
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+          {/* Full Name */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">
+              Full Name
+            </label>
+            <input
+              {...register("name")}
+              type="text"
+              placeholder="Enter your full name"
+              className={`w-full px-3 py-2 border rounded-lg bg-slate-900 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
+                errors.name ? "border-red-500" : "border-slate-700"
+              }`}
+            />
+            {errors.name && (
+              <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>
+            )}
           </div>
 
-          {errors.root && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{errors.root.message}</div>
-            </div>
-          )}
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">
+              Email Address
+            </label>
+            <input
+              {...register("email")}
+              type="email"
+              placeholder="Enter your email address"
+              className={`w-full px-3 py-2 border rounded-lg bg-slate-900 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
+                errors.email ? "border-red-500" : "border-slate-700"
+              }`}
+            />
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-          <div className="flex items-center">
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                placeholder="Create a password"
+                className={`w-full px-3 py-2 border rounded-lg bg-slate-900 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10 ${
+                  errors.password ? "border-red-500" : "border-slate-700"
+                }`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="w-5 h-5" />
+                ) : (
+                  <FaEye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-400 text-xs mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                {...register("confirmPassword")}
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm your password"
+                className={`w-full px-3 py-2 border rounded-lg bg-slate-900 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10 ${
+                  errors.confirmPassword ? "border-red-500" : "border-slate-700"
+                }`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? (
+                  <FaEyeSlash className="w-5 h-5" />
+                ) : (
+                  <FaEye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <p className="text-red-400 text-xs mt-1">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
+          {/* Terms */}
+          <div className="flex items-start text-sm">
             <input
               id="terms"
-              name="terms"
               type="checkbox"
               required
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-500 border-slate-600 bg-slate-700 rounded mt-1"
             />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="terms" className="ml-2 text-slate-300">
               I agree to the{" "}
-              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              <a href="#" className="text-indigo-400 hover:text-indigo-300">
                 Terms and Conditions
               </a>{" "}
               and{" "}
-              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+              <a href="#" className="text-indigo-400 hover:text-indigo-300">
                 Privacy Policy
               </a>
             </label>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : null}
-              {isLoading ? "Creating account..." : "Create account"}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <Link
-                href="/auth/signin"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Sign in here
-              </Link>
-            </p>
-          </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-2 px-4 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Creating account..." : "Create account"}
+          </button>
         </form>
-      </div>
+
+        {/* Footer */}
+        <div className="text-center mt-6">
+          <p className="text-sm text-slate-400">
+            Already have an account?{" "}
+            <Link
+              href="/auth/signin"
+              className="text-indigo-400 hover:text-indigo-300"
+            >
+              Sign in here
+            </Link>
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 };

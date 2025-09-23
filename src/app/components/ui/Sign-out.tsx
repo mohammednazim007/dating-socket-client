@@ -2,31 +2,36 @@
 import { useAppDispatch } from "@/app/hooks/hooks";
 import api from "@/app/lib/axios";
 import { clearUser } from "@/app/redux/features/auth/userSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
+import { motion } from "motion/react";
 
 const SignOutButton = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const signOutHandler = async () => {
-    const signOut = await api.get("/user/logout");
-
-    if (signOut.status === 200) {
-      //   console.log("You have been successfully signed out");
-
-      dispatch(clearUser());
-      router.push("/");
+    try {
+      const signOut = await api.get("/user/logout");
+      if (signOut.status === 200) {
+        dispatch(clearUser());
+        router.push(redirect);
+      }
+    } catch (error) {
+      console.error("Error signing out:", error);
     }
   };
 
   return (
-    <button
-      onClick={() => signOutHandler()}
-      className="w-10 h-10 rounded-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white"
+    <motion.button
+      onClick={signOutHandler}
+      className="flex text-sm items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-semibold rounded-lg shadow-sm transition-colors duration-300"
     >
-      <IoMdLogOut />
-    </button>
+      <IoMdLogOut className="w-5 h-5" />
+      <span>Sign Out</span>
+    </motion.button>
   );
 };
 

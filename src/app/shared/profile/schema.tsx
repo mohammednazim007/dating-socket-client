@@ -1,11 +1,21 @@
 import * as Yup from "yup";
-// ✅ Yup Schema
-const profileSchema = Yup.object({
+export const profileSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   currentPassword: Yup.string(),
-  newPassword: Yup.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("newPassword"), ""],
-    "Passwords must match"
-  ),
+  newPassword: Yup.string().when("currentPassword", {
+    is: (val: string | undefined) => !!val && val.length > 0,
+    then: (schema) =>
+      schema
+        .required("New password is required")
+        .min(6, "Password must be at least 6 characters"),
+    otherwise: (schema) => schema,
+  }),
+  confirmPassword: Yup.string().when("newPassword", {
+    is: (val: string | undefined) => !!val && val.length > 0,
+    then: (schema) =>
+      schema
+        .required("Confirm password is required")
+        .oneOf([Yup.ref("newPassword")], "Passwords must match"),
+    otherwise: (schema) => schema,
+  }),
 });

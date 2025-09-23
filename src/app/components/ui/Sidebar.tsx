@@ -1,11 +1,11 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
 import { RootState } from "@/app/redux/store";
-import SignOutButton from "./Sign-out";
 import UserProfile from "../ui/User-profile";
 import useFriendListUser from "@/app/hooks/useActiveUser";
 import { setActiveUser } from "@/app/redux/features/friend-slice/friendSlice";
 import Image from "next/image";
+import { motion, AnimatePresence } from "motion/react";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -17,22 +17,34 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="w-72 md:w-80 bg-[#1e293b] border-r border-gray-700 flex flex-col h-full">
+    <motion.div
+      initial={{ x: -300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -300, opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="w-72 md:w-80 bg-slate-800 text-slate-100 border-r border-slate-700 flex flex-col h-full"
+    >
       {/* Mobile Close Button */}
       <div className="md:hidden flex justify-end p-2">
         <button
           onClick={onClose}
-          className="px-3 py-1 text-sm rounded-lg bg-[#334155] hover:bg-[#475569]"
+          className="px-3 py-1 text-sm rounded-lg bg-slate-700 hover:bg-slate-600 transition"
         >
           ✕
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-around py-4 border-b border-gray-600">
-        <button className="text-blue-400 font-semibold">Direct</button>
-        <button className="text-gray-400 hover:text-white">Group</button>
-        <button className="text-gray-400 hover:text-white">Public</button>
+      <div className="flex justify-around py-4 border-b border-slate-700">
+        <button className="text-blue-400 font-semibold hover:text-blue-300 transition">
+          Direct
+        </button>
+        <button className="text-slate-400 hover:text-white transition">
+          Group
+        </button>
+        <button className="text-slate-400 hover:text-white transition">
+          Public
+        </button>
       </div>
 
       {/* Search */}
@@ -40,63 +52,63 @@ const Sidebar = ({ onClose }: SidebarProps) => {
         <input
           type="text"
           placeholder="Search"
-          className="w-full rounded-lg bg-[#334155] px-3 py-2 text-sm outline-none"
+          className="w-full rounded-lg bg-slate-700 px-3 py-2 text-sm placeholder-slate-400 text-white outline-none focus:ring-2 focus:ring-indigo-500 transition"
         />
       </div>
 
       {/* Chat Users */}
       <div className="flex-1 overflow-y-auto">
         {activeFriendUsers?.length ? (
-          activeFriendUsers.map((activeFriend) => (
-            <div
-              onClick={() => dispatch(setActiveUser(activeFriend))}
-              key={activeFriend._id}
-              className="flex items-center gap-3 p-3 hover:bg-[#334155] cursor-pointer"
+          activeFriendUsers.map((friend) => (
+            <motion.div
+              key={friend._id}
+              onClick={() => dispatch(setActiveUser(friend))}
+              className="flex items-center gap-3 p-3 hover:bg-slate-700 cursor-pointer transition rounded-lg mx-2 my-1"
+              whileHover={{ scale: 1.02 }}
             >
               {/* Avatar */}
               <div className="w-10 h-10 rounded-full overflow-hidden">
-                {activeFriend?.avatar ? (
+                {friend?.avatar ? (
                   <Image
                     width={40}
                     height={40}
-                    src={activeFriend.avatar}
+                    src={friend.avatar}
                     alt="Avatar"
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center text-white">
-                    {activeFriend?.name?.charAt(0) || "U"}
+                  <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-white">
+                    {friend?.name?.charAt(0) || "U"}
                   </div>
                 )}
               </div>
 
               {/* User Info */}
               <div className="flex-1">
-                <p className="text-sm font-semibold">
-                  {activeFriend?.name || "Unknown User"}
+                <p className="text-sm font-semibold text-white">
+                  {friend?.name || "Unknown User"}
                 </p>
-                <p className="text-xs text-gray-400 transition-all">
+                <p className="text-xs text-slate-400 transition-all">
                   View chat
                 </p>
               </div>
 
               {/* Time placeholder */}
-              <span className="text-xs text-gray-400">10:00pm</span>
-            </div>
+              <span className="text-xs text-slate-400">10:00pm</span>
+            </motion.div>
           ))
         ) : (
-          <p className="text-center text-gray-400 p-4">No friends found</p>
+          <p className="text-center text-slate-400 p-4">No friends found</p>
         )}
       </div>
 
       {/* Profile + Sign Out */}
       {currentUser?.user && (
-        <div className="p-2 border-t border-gray-700 flex items-center justify-between gap-2">
+        <div className="p-2 border-t border-slate-700 flex items-center justify-between gap-2 bg-slate-900">
           <UserProfile currentUser={currentUser.user} isDisable={false} />
-          <SignOutButton />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
