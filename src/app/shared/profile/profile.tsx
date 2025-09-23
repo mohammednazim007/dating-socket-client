@@ -21,6 +21,7 @@ import { setUser } from "@/app/redux/features/auth/userSlice";
 import { RootState } from "@/app/redux/store";
 import { profileSchema } from "./schema";
 import SignOutButton from "@/app/components/ui/Sign-out";
+import { toast } from "react-hot-toast";
 
 interface ProfileFormValues {
   name: string;
@@ -97,10 +98,12 @@ const Profile = () => {
         withCredentials: true,
       });
 
-      console.log("✅ Profile updated successfully:", response.data);
-
-      dispatch(setUser(response.data.user));
-      resetForm();
+      if (response.status === 200) {
+        toast.success("Profile updated successfully!");
+        dispatch(setUser(response.data.user));
+        resetForm();
+        window.location.reload(); // Reload to reflect changes
+      }
     } catch (error: any) {
       console.error(
         "❌ Error updating profile:",

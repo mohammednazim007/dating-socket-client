@@ -27,6 +27,7 @@ const SignOutButton = () => {
   return (
     <motion.button
       onClick={signOutHandler}
+      type="button"
       className="flex text-sm items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-semibold rounded-lg shadow-sm transition-colors duration-300"
     >
       <IoMdLogOut className="w-5 h-5" />
