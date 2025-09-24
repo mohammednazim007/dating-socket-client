@@ -103,7 +103,7 @@ const Profile = () => {
         dispatch(setUser(response.data.user));
         resetForm();
         window.location.reload(); // Reload to reflect changes
-        router.refresh();
+        // router.refresh();
       }
     } catch (error: any) {
       console.error(
