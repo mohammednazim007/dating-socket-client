@@ -205,7 +205,6 @@ import React, { useEffect, useState, useRef } from "react";
 import MessageArea from "./Message-area";
 import FriendsProfile from "./FriendsProfile";
 import { motion } from "motion/react";
-import { useSocket } from "@/app/hooks/useSocket";
 import api from "@/app/lib/axios"; // assuming axios wrapper
 
 interface ChatAreaProps {
@@ -223,54 +222,13 @@ export interface Message {
 const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
   const selectedFriends = useAppSelector((state: RootState) => state.friend);
   const currentUser = useAppSelector((state: RootState) => state.auth.user);
-  const socket = useSocket();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const room = selectedFriends?.activeUser?._id; // each friend = separate room
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔹 Join room when active friend changes
-  useEffect(() => {
-    if (socket && room) {
-      socket.emit("join_room", room);
-
-      // Load chat history
-      api.get(`/messages/${room}`).then((res) => {
-        setMessages(res.data || []);
-      });
-    }
-  }, [socket, room]);
-
-  // 🔹 Listen for new messages
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("receive_message", (data: Message) => {
-      setMessages((prev) => [...prev, data]);
-    });
-
-    return () => {
-      socket.off("receive_message");
-    };
-  }, [socket]);
-
-  // 🔹 Auto scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   // 🔹 Send message
-  const handleSend = () => {
-    if (socket && message.trim() && room && currentUser?._id) {
-      socket.emit("send_message", {
-        senderId: currentUser._id, // ✅ real userId
-        room,
-        content: message,
-      });
-      setMessage("");
-    }
-  };
+  const handleSend = () => {};
 
   return (
     <div className="flex-1 flex flex-col bg-[#0f172a] text-slate-100">
@@ -307,7 +265,7 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
 
       {/* Message area */}
       <div className="flex-1 overflow-y-auto bg-slate-900">
-        <MessageArea messages={messages} socketId={socket?.id} />
+        <MessageArea />
         <div ref={messagesEndRef} />
       </div>
 
