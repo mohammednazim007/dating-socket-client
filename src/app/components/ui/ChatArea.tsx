@@ -206,6 +206,7 @@ import MessageArea from "./Message-area";
 import FriendsProfile from "./FriendsProfile";
 import { motion } from "motion/react";
 import { useSocket } from "@/app/socket-io/useSocket";
+import { io } from "socket.io-client";
 
 interface ChatAreaProps {
   onToggleSidebar: () => void;
@@ -215,12 +216,13 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
   const selectedFriends = useAppSelector((state: RootState) => state.friend);
   const currentUser = useAppSelector((state: RootState) => state.auth.user);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const socket = useSocket();
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const room = selectedFriends?.activeUser?._id; // each friend = separate room
 
   useEffect(() => {
-    if (socket && room) {
+    if (socket?.connected && room) {
       socket.emit("join_room", room);
     }
   }, [socket, room]);

@@ -1,24 +1,33 @@
-// src/app/hooks/useSocket.ts
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 export const useSocket = () => {
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io(
-        process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000",
-        {
-          withCredentials: true,
-        }
-      );
+    if (!socket) {
+      const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+      const newSocket = io(url!, {
+        withCredentials: true,
+        transports: ["websocket", "polling"],
+      });
+
+      newSocket.on("connect", () => {
+        console.log("✅ Socket connected:", newSocket.id);
+      });
+
+      newSocket.on("connect_error", (err) => {
+        console.error("❌ Socket connect_error:", err.message, err);
+      });
+
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
     }
-    return () => {
-      socketRef.current?.disconnect();
-    };
   }, []);
 
-  return socketRef.current;
+  return socket;
 };
