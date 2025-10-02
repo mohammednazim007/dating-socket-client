@@ -1,6 +1,21 @@
-import React from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
+import { getMessage } from "@/app/redux/features/message-slice/message-slice";
+import { getSocket } from "@/app/socket-io/socket-io";
+import React, { useEffect } from "react";
 
 const MessageArea = () => {
+  const { activeUser } = useAppSelector((state) => state.friend);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!activeUser) return;
+
+    dispatch(getMessage(activeUser?._id));
+
+    const socket = getSocket();
+    if (!socket) return;
+  }, [activeUser?._id]);
+
   return (
     <div className="flex-1 p-4 space-y-4 overflow-y-auto">
       <div className="max-w-sm p-3 rounded-lg bg-[#334155]">

@@ -7,4 +7,6 @@ export interface IMessage {
 
 export interface IChatMessage {
   chat: IMessage[];
+  loading: boolean;
+  error: string | null;
 }

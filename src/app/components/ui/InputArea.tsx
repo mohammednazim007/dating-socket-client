@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { FiSend, FiImage, FiEdit3, FiSmile, FiX } from "react-icons/fi";
+import { FiSend, FiImage, FiSmile, FiX } from "react-icons/fi";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useEmojiPicker } from "@/app/utility/useEmojiPicker";
+import { getSocket } from "@/app/socket-io/socket-io";
 
 const InputArea = () => {
   const [message, setMessage] = useState("");
@@ -13,15 +14,42 @@ const InputArea = () => {
 
   const isSendEnabled = message.trim().length > 0 || image !== null;
 
+  // Add selected emoji into the message input
+  const handleEmojiSelect = (emoji: any) => {
+    setMessage((prev) => prev + emoji.native);
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
     }
   };
 
-  const handleEmojiSelect = (emoji: any) => {
-    setMessage((prev) => prev + emoji.native);
+  // Submit message and image to backend
+  const handleSubmitMessage = async () => {
+    if (!isSendEnabled) return;
+
+    const formData = new FormData();
+    formData.append("text", message);
+    if (image) formData.append("media", image);
+
+    try {
+      console.log("Sending message:", { message, image });
+
+      // Reset input after successful send
+      setMessage("");
+      setImage(null);
+      setShowEmojiPicker(false);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
+
+  // ** handle socket emit message to backend
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+  }, []);
 
   return (
     <motion.div
@@ -49,7 +77,7 @@ const InputArea = () => {
         </div>
       )}
 
-      {/* Emoji Picker Popup */}
+      {/* Emoji Picker */}
       {showEmojiPicker && (
         <div ref={pickerRef} className="absolute bottom-14 left-2 z-50">
           <Picker data={data} onEmojiSelect={handleEmojiSelect} theme="dark" />
@@ -77,11 +105,6 @@ const InputArea = () => {
           />
         </label>
 
-        {/* Update/Edit Button */}
-        <button className="p-2 rounded-lg hover:bg-slate-700 transition text-slate-300">
-          <FiEdit3 size={20} />
-        </button>
-
         {/* Input Box */}
         <input
           type="text"
@@ -94,12 +117,13 @@ const InputArea = () => {
         {/* Send Button */}
         <button
           disabled={!isSendEnabled}
-          className={`p-3 rounded-lg transition shadow flex items-center justify-center 
-            ${
-              isSendEnabled
-                ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                : "bg-slate-700 text-slate-500 cursor-not-allowed"
-            }`}
+          type="button"
+          onClick={handleSubmitMessage}
+          className={`p-3 rounded-lg transition shadow flex items-center justify-center ${
+            isSendEnabled
+              ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+              : "bg-slate-700 text-slate-500 cursor-not-allowed"
+          }`}
         >
           <FiSend size={18} />
         </button>
