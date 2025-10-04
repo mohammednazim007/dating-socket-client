@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   setActiveUser,
   setOnlineUsers,
-} from "@/app/redux/features/friend-slice/online-user-slice";
+} from "@/app/redux/features/friend-slice/message-user-slice";
 import { useEffect } from "react";
 import { connectSocket } from "@/app/socket-io/socket-io";
 

@@ -1,8 +1,7 @@
 // redux/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/userSlice";
-import onlineSlice from "@/app/redux/features/friend-slice/online-user-slice";
-import chatReducer from "@/app/redux/features/message-slice/message-slice";
+import onlineSlice from "@/app/redux/features/friend-slice/message-user-slice";
 
 import {
   persistStore,
@@ -29,7 +28,6 @@ export const store = configureStore({
   reducer: {
     auth: persistedReducer,
     friend: onlineSlice,
-    chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
