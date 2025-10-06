@@ -7,8 +7,9 @@ import { useEmojiPicker } from "@/app/hooks/useEmojiPicker";
 import { useAppSelector, useAppDispatch } from "@/app/hooks/hooks";
 import api from "@/app/lib/axios";
 import { useState } from "react";
-import { addMessage } from "@/app/redux/features/friend-slice/message-user-slice";
 import { getSocket } from "@/app/socket-io/socket-io";
+import { RootState } from "@/app/redux/store";
+import { sendMessage } from "@/app/utility/sendMessage";
 
 const InputArea = () => {
   const [message, setMessage] = useState("");
@@ -17,6 +18,7 @@ const InputArea = () => {
   const { activeUser } = useAppSelector((state) => state.friend);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state: RootState) => state.auth.user); // Assuming you store current user
 
   const { pickerRef, setShowEmojiPicker, showEmojiPicker } = useEmojiPicker();
   const isSendEnabled = message.trim().length > 0 || image !== null;
@@ -32,22 +34,22 @@ const InputArea = () => {
   };
 
   const handleSend = async () => {
-    if (!activeUser || !user) return;
+    if (!currentUser || !activeUser) return;
+    console.log("Sending message:", {
+      message,
+      image,
+      sender_id: currentUser._id,
+      receiver_id: activeUser._id,
+    });
 
-    const formData = new FormData();
-    formData.append("sender_id", user._id);
-    formData.append("text", message);
-    if (image) formData.append("file", image);
-
-    const { data } = await api.post(
-      `/messages/send/${activeUser._id}`,
-      formData
+    await dispatch(
+      sendMessage({
+        sender_id: currentUser._id,
+        receiver_id: activeUser._id,
+        text: message,
+        media: image || undefined,
+      })
     );
-    console.log("data", data);
-
-    dispatch(addMessage(data.data));
-    const socket = getSocket();
-    socket?.emit("new_message", data.data);
 
     setMessage("");
     setImage(null);

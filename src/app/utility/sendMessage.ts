@@ -2,16 +2,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../lib/axios";
 import { IChatMessage } from "../redux/features/friend-slice/interface";
 
-// ✅ Send message (text or image)
+// ✅ Send message (text or media)
 export const sendMessage = createAsyncThunk<
   IChatMessage,
-  { sender_id: string; receiver_id: string; text?: string; image?: File }
+  { sender_id: string; receiver_id: string; text?: string; media?: File }
 >("messages/sendMessage", async (data, { rejectWithValue }) => {
   try {
     const formData = new FormData();
     formData.append("sender_id", data.sender_id);
     formData.append("text", data.text || "");
-    if (data.image) formData.append("file", data.image);
+    if (data.media) formData.append("file", data.media);
 
     const res = await api.post(`/message/send/${data.receiver_id}`, formData);
     return res.data.data as IChatMessage;
