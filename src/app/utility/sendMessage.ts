@@ -6,7 +6,7 @@ import { IChatMessage } from "../redux/features/friend-slice/interface";
 export const sendMessage = createAsyncThunk<
   IChatMessage,
   { sender_id: string; receiver_id: string; text?: string; media?: File }
->("messages/sendMessage", async (data, { rejectWithValue }) => {
+>("message/sendMessage", async (data, { rejectWithValue }) => {
   try {
     const formData = new FormData();
     formData.append("sender_id", data.sender_id);

@@ -14,9 +14,9 @@ interface IMessage {
 export const fetchChatHistory = createAsyncThunk<
   IMessage[],
   { sender_id: string; receiver_id: string }
->("messages/fetchChatHistory", async (data, { rejectWithValue }) => {
+>("message/fetchChatHistory", async (data, { rejectWithValue }) => {
   try {
-    const res = await api.post(`/message/history`, data);
+    const res = await api.post(`/message/get_message`, data);
     return res.data.data as IMessage[];
   } catch (error: any) {
     return rejectWithValue(

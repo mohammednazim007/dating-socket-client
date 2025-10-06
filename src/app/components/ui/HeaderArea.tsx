@@ -8,7 +8,7 @@ interface HeaderAreaProps {
 }
 
 const HeaderArea = ({ onToggleSidebar, selectedFriends }: HeaderAreaProps) => {
-  console.log("Header selected friend:", selectedFriends);
+  // console.log("Header selected friend:", selectedFriends);
 
   return (
     <motion.div

@@ -24,6 +24,14 @@ const onlineSlice = createSlice({
     setActiveUser: (state, action: PayloadAction<IFriend>) => {
       state.activeUser = action.payload;
     },
+
+    addNewMessage: (state, action: PayloadAction<IChatMessage>) => {
+      state.chat.push(action.payload);
+    },
+
+    clearMessages: (state) => {
+      state.chat = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,5 +53,6 @@ const onlineSlice = createSlice({
   },
 });
 
-export const { setOnlineUsers, setActiveUser } = onlineSlice.actions;
+export const { setOnlineUsers, setActiveUser, addNewMessage, clearMessages } =
+  onlineSlice.actions;
 export default onlineSlice.reducer; // ✅ export reducer, not slice
