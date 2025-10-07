@@ -33,7 +33,8 @@ const InputArea = () => {
     setMessage((prev) => prev + emoji.native);
   };
 
-  const handleSend = () => {
+  // ** Handle Send Message
+  const handleSubmit = () => {
     if (!currentUser || !activeUser) return;
 
     dispatch(
@@ -47,8 +48,10 @@ const InputArea = () => {
 
     setMessage("");
     setImage(null);
+    handleBlur();
   };
 
+  // ** typing indicator
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMessage(value);
@@ -143,7 +146,7 @@ const InputArea = () => {
         {/* Send Button */}
         <button
           disabled={!isSendEnabled}
-          onClick={handleSend}
+          onClick={handleSubmit}
           className={`p-3 rounded-lg transition shadow flex items-center justify-center 
             ${
               isSendEnabled
