@@ -5,7 +5,6 @@ import React, { useEffect, useRef } from "react";
 import MessageArea from "./Message-area";
 import InputArea from "./InputArea";
 import HeaderArea from "./HeaderArea";
-import { connectSocket } from "@/app/socket-io/socket-io";
 import NoChatSelected from "./NoChatSelected";
 
 interface ChatAreaProps {
@@ -16,8 +15,7 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
   const { activeUser, chat } = useAppSelector(
     (state: RootState) => state.friend
   );
-  const { user } = useAppSelector((state: RootState) => state.auth);
-  connectSocket(user?._id!);
+  // const { user } = useAppSelector((state: RootState) => state.auth);
 
   // ✅ Auto scroll ref
   const messageEndRef = useRef<HTMLDivElement | null>(null);

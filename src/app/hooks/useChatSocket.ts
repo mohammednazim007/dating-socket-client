@@ -1,44 +1,34 @@
-// // src/hooks/useChatSocket.ts
-// "use client";
-// import { useEffect } from "react";
-// import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
-// import { connectSocket, disconnectSocket } from "../socket-io/socket-io";
-// import {
-//   addMessage,
-//   setChatHistory,
-// } from "../redux/features/friend-slice/message-user-slice";
-// import api from "../lib/axios";
+// useSocket.ts
+import { useEffect } from "react";
+import { connectSocket, getSocket } from "@/app/socket-io/socket-io";
+import { useAppDispatch } from "@/app/hooks/hooks";
+import {
+  addNewMessage,
+  setOnlineUsers,
+} from "@/app/redux/features/friend-slice/message-user-slice";
 
-// export const useChatSocket = () => {
-//   const dispatch = useAppDispatch();
-//   const { activeUser } = useAppSelector((state) => state.friend);
-//   const { user } = useAppSelector((state) => state.auth); // assume logged in user
+export const useSocket = (userId: string) => {
+  const dispatch = useAppDispatch();
 
-//   useEffect(() => {
-//     if (!user?._id) return;
+  useEffect(() => {
+    if (!userId) return;
 
-//     const socket = connectSocket(user._id);
+    // Connect socket
+    connectSocket(userId);
+    const socket = getSocket();
+    if (!socket) return;
 
-//     socket.on("new_message", (message: any) => {
-//       dispatch(addMessage(message));
-//     });
+    // Listen to events
+    const handleNewMessage = (msg: any) => dispatch(addNewMessage(msg));
+    const handleOnlineUsers = (users: string[]) =>
+      dispatch(setOnlineUsers(users));
 
-//     return () => {
-//       disconnectSocket();
-//     };
-//   }, [user, dispatch]);
+    socket.on("new_message", handleNewMessage);
+    socket.on("get_online_users", handleOnlineUsers);
 
-//   // Fetch chat history whenever active user changes
-//   useEffect(() => {
-//     const fetchChatHistory = async () => {
-//       if (!user?._id || !activeUser?._id) return;
-//       const { data } = await api.post("/messages/history", {
-//         sender_id: user._id,
-//         receiver_id: activeUser._id,
-//       });
-//       dispatch(setChatHistory(data.data));
-//     };
-
-//     fetchChatHistory();
-//   }, [activeUser, user, dispatch]);
-// };
+    return () => {
+      socket.off("new_message", handleNewMessage);
+      socket.off("get_online_users", handleOnlineUsers);
+    };
+  }, [userId, dispatch]);
+};

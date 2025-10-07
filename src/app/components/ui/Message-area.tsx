@@ -1,5 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
+import { useSocket } from "@/app/hooks/useChatSocket";
 import { addNewMessage } from "@/app/redux/features/friend-slice/message-user-slice";
 import { RootState } from "@/app/redux/store";
 import { connectSocket, getSocket } from "@/app/socket-io/socket-io";
@@ -12,9 +13,10 @@ const MessageArea = () => {
     (state: RootState) => state.friend
   );
   const currentUser = useAppSelector((state: RootState) => state.auth.user);
-  connectSocket(currentUser?._id as string);
+  // ✅ Connect socket and listen for events
+  useSocket(currentUser?._id || "");
 
-  // ✅ Fetch chat on friend select
+  // ✅ Fetch chat history when active user changes
   useEffect(() => {
     if (currentUser && activeUser) {
       dispatch(
@@ -24,27 +26,7 @@ const MessageArea = () => {
         })
       );
     }
-  }, [dispatch, currentUser, activeUser]);
-
-  // ✅ Listen for new messages and scroll to bottom
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-
-    socket.on("new_message", (message: any) => {
-      dispatch(addNewMessage(message));
-      alert("New message received");
-    });
-
-    socket.on("get_online_users", (users: any) => {
-      console.log("Online users:", users);
-    });
-
-    return () => {
-      socket.off("new_message");
-    };
-  }, [dispatch, currentUser, activeUser]);
-
+  }, [currentUser, activeUser, dispatch]);
   return (
     <>
       <div className="flex flex-col gap-4 p-4 bg-slate-900">
@@ -80,40 +62,3 @@ const MessageArea = () => {
 };
 
 export default MessageArea;
-// <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-//   <div className="max-w-sm p-3 rounded-lg bg-[#334155]">
-//     <p className="text-sm">
-//       What do you think about our plans for this product launch?
-//     </p>
-//     <span className="block text-right text-xs text-gray-400">09:25</span>
-//   </div>
-
-//   <div className="max-w-sm p-3 rounded-lg bg-[#334155]">
-//     <p className="text-sm">
-//       It looks to me like you have a lot planned before your deadline. I
-//       would suggest you push your deadline back so you have time to run a
-//       successful campaign.
-//     </p>
-//     <span className="block text-right text-xs text-gray-400">09:28</span>
-//   </div>
-
-//   {/* Right Side Messages */}
-//   <div className="flex justify-end">
-//     <div className="max-w-sm p-3 rounded-lg bg-blue-600">
-//       <p className="text-sm">
-//         I would suggest you discuss this further with the advertising team.
-//       </p>
-//       <span className="block text-right text-xs text-gray-200">09:41</span>
-//     </div>
-//   </div>
-
-//   <div className="flex justify-end">
-//     <div className="max-w-sm p-3 rounded-lg bg-blue-600">
-//       <p className="text-sm">
-//         I am very busy at the moment and on top of everything, I forgot my
-//         umbrella today.
-//       </p>
-//       <span className="block text-right text-xs text-gray-200">09:41</span>
-//     </div>
-//   </div>
-// </div>
