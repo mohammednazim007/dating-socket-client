@@ -6,7 +6,7 @@ const useFriendListUser = (userId: string) => {
   const [activeFriendUsers, setActiveFriendUsers] = useState<IFriend[] | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,14 +19,14 @@ const useFriendListUser = (userId: string) => {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchUser();
   }, [userId]);
 
-  return { activeFriendUsers, loading };
+  return { activeFriendUsers, isLoading };
 };
 
 export default useFriendListUser;

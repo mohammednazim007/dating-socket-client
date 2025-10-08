@@ -1,15 +1,15 @@
 import { motion } from "motion/react";
-import { IFriend } from "@/app/types/friend.types";
 import UserProfile from "./User-profile";
 import { useAppSelector } from "@/app/hooks/hooks";
+import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
 
 interface HeaderAreaProps {
   onToggleSidebar: () => void;
-  selectedFriends: IFriend | null;
 }
 
-const HeaderArea = ({ onToggleSidebar, selectedFriends }: HeaderAreaProps) => {
+const HeaderArea = ({ onToggleSidebar }: HeaderAreaProps) => {
   const { activeUser } = useAppSelector((state) => state.friend);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -27,7 +27,11 @@ const HeaderArea = ({ onToggleSidebar, selectedFriends }: HeaderAreaProps) => {
         </button>
 
         <div>
-          <UserProfile currentUser={activeUser} isTimeAvailable={true} />
+          {activeUser ? (
+            <UserProfile currentUser={activeUser} isTimeAvailable={true} />
+          ) : (
+            <FriendListSkeleton count={1} />
+          )}
         </div>
       </div>
       <button className="p-2 rounded-lg hover:bg-slate-700 transition">

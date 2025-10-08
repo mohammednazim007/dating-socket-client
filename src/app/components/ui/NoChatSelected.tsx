@@ -6,8 +6,8 @@ import React from "react";
 const NoChatSelected = () => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center justify-center h-full text-center text-slate-400 bg-slate-900"
     >

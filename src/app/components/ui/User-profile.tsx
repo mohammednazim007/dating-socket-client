@@ -3,9 +3,6 @@ import avatar from "@/app/assets/profile.png";
 import { User } from "@/app/types/auth";
 import { formatLastSeenTime } from "@/app/utility/formatLastSeenTime";
 
-// Define a type for the time prop to ensure flexibility
-type TimeValue = string | Date | null;
-
 interface UserProfileProps {
   currentUser: User | null;
   isTimeAvailable: boolean;

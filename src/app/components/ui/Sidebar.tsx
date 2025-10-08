@@ -2,12 +2,13 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
 import { RootState } from "@/app/redux/store";
 import UserProfile from "../ui/User-profile";
-import useFriendListUser from "@/app/hooks/useActiveUser";
+import useFriendListUser from "@/app/hooks/useFriendList";
 import { motion, AnimatePresence } from "motion/react";
 import { setActiveUser } from "@/app/redux/features/friend-slice/message-user-slice";
 import FriendList from "@/app/shared/Friend-List/FriendList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -15,7 +16,9 @@ interface SidebarProps {
 
 const Sidebar = ({ onClose }: SidebarProps) => {
   const currentUser = useAppSelector((state: RootState) => state.auth);
-  const { activeFriendUsers } = useFriendListUser(currentUser?.user?._id || "");
+  const { activeFriendUsers, isLoading } = useFriendListUser(
+    currentUser?.user?._id || ""
+  );
   const { onlineUsers } = useAppSelector((state: RootState) => state.friend);
   const dispatch = useAppDispatch();
 
@@ -75,9 +78,11 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           />
         </div>
 
-        {/* Online Users - Optional */}
+        {/* Friend list profile */}
         <div className="flex-1 overflow-y-auto">
-          {activeFriendUsers?.length ? (
+          {isLoading ? (
+            <FriendListSkeleton count={6} />
+          ) : activeFriendUsers?.length ? (
             <FriendList
               friends={activeFriendUsers}
               onlineUsers={onlineUsers}

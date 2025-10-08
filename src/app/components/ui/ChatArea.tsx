@@ -16,10 +16,7 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
     // ✅ Full height flexible container
     <div className="flex flex-col flex-1 min-h-0 bg-[#0f172a] text-slate-100">
       {/* Header */}
-      <HeaderArea
-        onToggleSidebar={onToggleSidebar}
-        selectedFriends={activeUser}
-      />
+      <HeaderArea onToggleSidebar={onToggleSidebar} />
 
       {/* ✅ Main scrollable section */}
       <div className="flex-1 min-h-0 flex flex-col">
