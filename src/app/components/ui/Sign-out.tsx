@@ -35,11 +35,7 @@ const SignOutButton = () => {
   );
 
   // ** Cleanup debounce
-  useEffect(() => {
-    return () => {
-      debouncedSignOut.cancel();
-    };
-  }, [debouncedSignOut]);
+  useEffect(() => debouncedSignOut.cancel(), [debouncedSignOut]);
 
   return (
     <motion.button

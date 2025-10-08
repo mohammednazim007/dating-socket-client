@@ -83,45 +83,6 @@ const Profile = () => {
     }
   };
 
-  // const handleSubmitDebounce = debounce(
-  //   async (
-  //     values: ProfileFormValues,
-  //     { resetForm }: { resetForm: () => void }
-  //   ) => {
-  //     try {
-  //       console.log("hi");
-
-  //       const formData = new FormData();
-  //       formData.append("name", values.name);
-
-  //       if (values.currentPassword && values.newPassword) {
-  //         formData.append("currentPassword", values.currentPassword);
-  //         formData.append("newPassword", values.newPassword);
-  //       }
-
-  //       if (values.image) {
-  //         formData.append("image", values.image);
-  //       }
-
-  //       const response = await api.post("/user/profile", formData, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //         withCredentials: true,
-  //       });
-
-  //       if (response.status === 200) {
-  //         toast.success("Profile updated successfully!");
-  //         dispatch(setUser(response.data.user));
-  //         resetForm();
-  //         window.location.reload(); // Reload to reflect changes
-  //         // router.refresh();
-  //       }
-  //     } catch (error: any) {
-  //       console.error(error.response?.data || error.message);
-  //     }
-  //   },
-  //   5000
-  // );
-
   // 1. Define the core, non-debounced submission logic using useCallback.
   const submitLogic = useCallback(
     async (
@@ -129,8 +90,6 @@ const Profile = () => {
       { resetForm }: { resetForm: () => void }
     ) => {
       try {
-        console.log("Attempting profile update...");
-
         const formData = new FormData();
         formData.append("name", values.name);
 
@@ -150,17 +109,13 @@ const Profile = () => {
           dispatch(setUser(response.data.user));
           resetForm();
           window.location.reload(); // Reload to reflect changes
-          // Use router.refresh() if available in your Next.js version for soft refresh
+          // Use router.refresh()
         }
       } catch (error: any) {
         const errorMessage =
           error.response?.data?.message ||
           "Failed to update profile. Please try again.";
         toast.error(errorMessage);
-        console.error(
-          "Profile update failed:",
-          error.response?.data || error.message
-        );
       }
     },
     [dispatch, router] // Dependencies
@@ -172,9 +127,7 @@ const Profile = () => {
   );
 
   // 3. Cleanup: Ensure any pending submission is cancelled when the component unmounts.
-  useEffect(() => {
-    return () => debouncedSubmit.cancel();
-  }, [debouncedSubmit]);
+  useEffect(() => debouncedSubmit.cancel(), [debouncedSubmit]);
 
   return (
     <div className="bg-[#0f172a] flex items-center justify-center px-4 py-8 font-sans text-slate-100">

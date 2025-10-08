@@ -10,7 +10,6 @@ export function debounce<T extends (...args: any[]) => void>(
   // Timeout handle to store the timer reference
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  // Create the debounced function using 'as T' to maintain the original function's signature
   const debounced = function (
     this: ThisParameterType<T>,
     ...args: Parameters<T>
@@ -22,11 +21,10 @@ export function debounce<T extends (...args: any[]) => void>(
 
     // 2. Set a new timer
     timeoutId = setTimeout(() => {
-      // Execute the original function, preserving 'this' context and arguments
       func.apply(this, args);
-      timeoutId = null; // Clear the handle after execution
+      timeoutId = null;
     }, delay);
-  } as T & { cancel: () => void }; // Assert the combined type
+  } as T & { cancel: () => void };
 
   /**
    * Immediately cancels any pending execution of the debounced function.
