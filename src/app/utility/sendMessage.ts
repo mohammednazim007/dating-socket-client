@@ -11,7 +11,7 @@ export const sendMessage = createAsyncThunk<
     const formData = new FormData();
     formData.append("sender_id", data.sender_id);
     formData.append("text", data.text || "");
-    if (data.media) formData.append("file", data.media);
+    if (data.media) formData.append("media", data.media);
 
     const res = await api.post(`/message/send/${data.receiver_id}`, formData);
     return res.data.data as IChatMessage;

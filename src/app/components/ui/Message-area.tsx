@@ -2,23 +2,24 @@
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
 import { useSocket } from "@/app/hooks/useChatSocket";
 import { TypingIndicator } from "@/app/shared/TypingIndicator/TypingIndicator";
-import { connectSocket, getSocket } from "@/app/socket-io/socket-io";
+import { getSocket } from "@/app/socket-io/socket-io";
 import { fetchChatHistory } from "@/app/utility/fetchChatHistory";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
+// Fallback avatar path for safety
+const DEFAULT_AVATAR = "/default-avatar.png";
+
 const MessageArea = () => {
   const [isTyping, setIsTyping] = useState(false);
-
   const dispatch = useAppDispatch();
   const { activeUser, chat } = useAppSelector((state) => state.friend);
   const currentUser = useAppSelector((state) => state.auth.user);
 
-  // ✅ Connect socket and listen for events
+  // ... (Hooks and useEffects remain the same) ...
   useSocket(currentUser?._id || "");
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ Fetch chat history when active user changes
   useEffect(() => {
     if (currentUser && activeUser) {
       dispatch(
@@ -30,7 +31,6 @@ const MessageArea = () => {
     }
   }, [currentUser, activeUser, dispatch]);
 
-  // ✅ Listen for incoming messages typing indicator
   useEffect(() => {
     const socket = getSocket();
     if (!socket || !currentUser || !activeUser) return;
@@ -49,68 +49,99 @@ const MessageArea = () => {
     };
   }, [activeUser, currentUser]);
 
-  // ✅ Scroll to bottom whenever chat updates
   useEffect(() => {
-    if (messageEndRef.current) {
-      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, isTyping]);
 
   return (
-    <>
-      <div className="container mx-auto flex flex-col gap-4 p-4 bg-slate-900 w-full ">
+    // Ensure the main container doesn't overflow
+    <div className="flex flex-col flex-1 min-h-0 bg-slate-900 w-full overflow-hidden">
+      <div className="flex-1 overflow-y-auto w-full py-4 space-y-3 min-h-0">
         {chat?.map((msg, i) => {
           const isSender = msg.sender_id === currentUser?._id;
           const isActiveUser = activeUser && activeUser?._id === msg?.sender_id;
 
           return (
+            // Outer container for the whole message row, with padding applied here
             <div
               key={i}
-              className={`flex items-start ${
+              className={`flex items-start px-3 sm:px-6 ${
                 isSender ? "justify-end" : "justify-start"
               }`}
             >
-              {/* For received messages, show avatar on the left */}
+              {/* Receiver avatar on the left */}
               {!isSender && isActiveUser && (
-                <div className="border-[1px] border-b-blue-200 w-9 h-9 rounded-full mr-2">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden mr-2 flex-shrink-0">
                   <Image
-                    width={200}
-                    height={200}
-                    src={activeUser?.avatar || ""}
-                    alt="avatar"
-                    priority={true}
-                    className="rounded-full p-[2px]"
+                    width={36}
+                    height={36}
+                    src={activeUser?.avatar || DEFAULT_AVATAR}
+                    alt="Receiver avatar"
+                    className="object-cover w-full h-full"
                   />
                 </div>
               )}
 
-              <div
-                className={`p-3 rounded-lg text-balance break-words
-    ${isSender ? "bg-blue-600 text-white" : "bg-slate-700 text-gray-100"}
-    max-w-[50%] sm:max-w-[65%]`}
-              >
-                {msg.text && <p className="text-sm break-words">{msg.text}</p>}
-              </div>
+              {/* ✅ Conditional rendering for text or media messages */}
+              {msg.text && ( // If it's a text message, render the text bubble
+                <div
+                  className={`
+                    p-3 rounded-lg text-balance 
+                    ${
+                      isSender
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-700 text-gray-100"
+                    }
+                    max-w-[80%] sm:max-w-[65%] lg:max-w-[50%] 
+                  `}
+                >
+                  <p className="text-sm break-all">{msg.text}</p>
+                </div>
+              )}
 
-              {/* For sent messages, optionally show your own avatar */}
               {msg.media && (
-                <Image
-                  width={200}
-                  height={200}
-                  src={msg?.media || ""}
-                  alt="avatar"
-                  className="w-8 h-8 rounded-full ml-2"
-                />
+                <div
+                  className={`
+                    
+                    max-w-[80%] sm:max-w-[65%] lg:max-w-[50%] 
+                    rounded-lg border border-gray-600 p-1
+                    ${isSender ? "ml-auto" : ""}
+                  `}
+                >
+                  <Image
+                    width={250}
+                    height={200}
+                    src={msg.media}
+                    alt="media"
+                    className="rounded-md max-w-full h-auto object-cover"
+                  />
+                </div>
+              )}
+
+              {/* Sender avatar on the right */}
+              {isSender && (
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden ml-2 flex-shrink-0">
+                  <Image
+                    width={36}
+                    height={36}
+                    src={currentUser?.avatar || DEFAULT_AVATAR}
+                    alt="Sender avatar"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
               )}
             </div>
           );
         })}
 
-        {/* Typing Indicator */}
-        <TypingIndicator isTyping={isTyping} name={activeUser?.name} />
+        {/* Typing indicator */}
+        <div className="px-3 sm:px-6">
+          <TypingIndicator isTyping={isTyping} name={activeUser?.name} />
+        </div>
+
         <div ref={messageEndRef} />
       </div>
-    </>
+    </div>
   );
 };
 
