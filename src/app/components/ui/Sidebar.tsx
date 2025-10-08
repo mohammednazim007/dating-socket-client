@@ -84,7 +84,10 @@ const Sidebar = ({ onClose }: SidebarProps) => {
         {/* Profile + Sign Out */}
         {currentUser?.user && (
           <div className="p-2 border-t border-slate-700 flex items-center justify-between gap-2 bg-slate-900">
-            <UserProfile currentUser={currentUser.user} isDisable={false} />
+            <UserProfile
+              currentUser={currentUser.user}
+              isTimeAvailable={false}
+            />
           </div>
         )}
       </motion.div>

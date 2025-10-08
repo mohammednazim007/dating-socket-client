@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
-import FriendsProfile from "./FriendsProfile";
 import { IFriend } from "@/app/types/friend.types";
+import UserProfile from "./User-profile";
+import { useAppSelector } from "@/app/hooks/hooks";
 
 interface HeaderAreaProps {
   onToggleSidebar: () => void;
@@ -8,6 +9,7 @@ interface HeaderAreaProps {
 }
 
 const HeaderArea = ({ onToggleSidebar, selectedFriends }: HeaderAreaProps) => {
+  const { activeUser } = useAppSelector((state) => state.friend);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -24,12 +26,8 @@ const HeaderArea = ({ onToggleSidebar, selectedFriends }: HeaderAreaProps) => {
           ☰
         </button>
 
-        <FriendsProfile currentFriends={selectedFriends} isDisable={true} />
         <div>
-          <p className="font-semibold text-white">
-            {selectedFriends?.name || "Select a chat"}
-          </p>
-          <p className="text-xs text-slate-400">Last seen 10:20pm</p>
+          <UserProfile currentUser={activeUser} isTimeAvailable={true} />
         </div>
       </div>
       <button className="p-2 rounded-lg hover:bg-slate-700 transition">

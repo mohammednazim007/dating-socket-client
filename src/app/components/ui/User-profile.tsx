@@ -1,42 +1,44 @@
 import Image from "next/image";
 import avatar from "@/app/assets/profile.png";
-import { useRouter } from "next/navigation";
 import { User } from "@/app/types/auth";
+import { formatLastSeenTime } from "@/app/utility/formatLastSeenTime";
+
+// Define a type for the time prop to ensure flexibility
+type TimeValue = string | Date | null;
+
 interface UserProfileProps {
   currentUser: User | null;
-  isDisable?: boolean;
+  isTimeAvailable: boolean;
 }
 
-const UserProfile = ({ currentUser, isDisable }: UserProfileProps) => {
-  const router = useRouter();
-
+const UserProfile = ({ currentUser, isTimeAvailable }: UserProfileProps) => {
   return (
-    <div
-      onClick={() => router.push("/profile")}
-      className="flex justify-center gap-1 cursor-pointer"
-    >
-      <button
-        disabled={isDisable}
-        className={`w-10 h-10 rounded-full overflow-hidden border-2 border-white flex items-center justify-center 
-      ${
-        isDisable
-          ? "bg-gray-400 cursor-not-allowed pointer-events-none"
-          : "bg-blue-600 hover:bg-blue-700"
-      }`}
-      >
+    <div className="flex items-center gap-3 rounded-lg cursor-pointer">
+      {/* Avatar Section */}
+      <div className="w-10 h-10 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-green-500/80 flex-shrink-0">
         <Image
-          width={40}
-          height={40}
+          width={48}
+          height={48}
           priority={true}
           src={currentUser?.avatar || avatar.src}
           alt={currentUser?.name || "User Avatar"}
-          className="w-full h-full object-cover"
         />
-      </button>
-      <span>
-        <h4 className="truncate capitalize">{currentUser?.name}</h4>
-        <p className="text-xs text-gray-400">View Profile</p>
-      </span>
+      </div>
+
+      {/* Name and Status/Time Section */}
+      <div className="flex flex-col justify-center">
+        <h4 className="text-white text-md font-semibold truncate max-w-[150px] sm:max-w-[200px] capitalize">
+          {currentUser?.name || "Unknown User"}
+        </h4>
+
+        <p
+          className={`text-xs ${
+            isTimeAvailable ? "text-gray-400" : "text-blue-400 font-medium"
+          }`}
+        >
+          {isTimeAvailable ? formatLastSeenTime() : "Online"}
+        </p>
+      </div>
     </div>
   );
 };

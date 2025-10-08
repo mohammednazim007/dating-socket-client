@@ -82,7 +82,7 @@ const InputArea = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="relative p-2 px-3 border-t border-slate-700 bg-slate-800 flex flex-col"
+      className="relative p-[7px] px-3 border-t border-slate-700 bg-slate-800 flex flex-col"
     >
       {/* Preview Section - Floating */}
       {image && (
