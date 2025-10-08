@@ -51,7 +51,9 @@ const FriendList = ({
               <p className="text-sm font-semibold text-white truncate">
                 {friend.name || "Unknown"}
               </p>
-              <p className="text-xs text-slate-400">Click to chat</p>
+              <p className="text-xs text-slate-400">
+                {isOnline ? "Online" : "Offline"}
+              </p>
             </div>
           </div>
         );
