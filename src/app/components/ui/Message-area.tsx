@@ -4,6 +4,7 @@ import { useSocket } from "@/app/hooks/useChatSocket";
 import { TypingIndicator } from "@/app/shared/TypingIndicator/TypingIndicator";
 import { connectSocket, getSocket } from "@/app/socket-io/socket-io";
 import { fetchChatHistory } from "@/app/utility/fetchChatHistory";
+import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
 const MessageArea = () => {
@@ -57,30 +58,50 @@ const MessageArea = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-4 bg-slate-900">
+      <div className="container mx-auto flex flex-col gap-4 p-4 bg-slate-900 w-full ">
         {chat?.map((msg, i) => {
           const isSender = msg.sender_id === currentUser?._id;
+          const isActiveUser = activeUser && activeUser?._id === msg?.sender_id;
+
           return (
             <div
               key={i}
-              className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+              className={`flex items-start ${
+                isSender ? "justify-end" : "justify-start"
+              }`}
             >
-              <div
-                className={`max-w-sm p-3 rounded-lg ${
-                  isSender
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-700 text-gray-100"
-                }`}
-              >
-                {msg.text && <p className="text-sm">{msg.text}</p>}
-                {msg.media && (
-                  <img
-                    src={msg.media}
-                    alt="media"
-                    className="rounded-lg mt-2 max-h-48"
+              {/* For received messages, show avatar on the left */}
+              {!isSender && isActiveUser && (
+                <div className="border-[1px] border-b-blue-200 w-9 h-9 rounded-full mr-2">
+                  <Image
+                    width={200}
+                    height={200}
+                    src={activeUser?.avatar || ""}
+                    alt="avatar"
+                    priority={true}
+                    className="rounded-full p-[2px]"
                   />
-                )}
+                </div>
+              )}
+
+              <div
+                className={`p-3 rounded-lg text-balance break-words
+    ${isSender ? "bg-blue-600 text-white" : "bg-slate-700 text-gray-100"}
+    max-w-[50%] sm:max-w-[65%]`}
+              >
+                {msg.text && <p className="text-sm break-words">{msg.text}</p>}
               </div>
+
+              {/* For sent messages, optionally show your own avatar */}
+              {msg.media && (
+                <Image
+                  width={200}
+                  height={200}
+                  src={msg?.media || ""}
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full ml-2"
+                />
+              )}
             </div>
           );
         })}

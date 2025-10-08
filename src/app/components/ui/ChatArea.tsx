@@ -23,7 +23,7 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
       }
 
       {/* Message area */}
-      <div className="flex-1 overflow-y-auto bg-slate-900">
+      <div className="flex-1 overflow-y-auto ">
         {!activeUser ? (
           <NoChatSelected /> // 👈 Show placeholder when no user selected
         ) : (
@@ -34,6 +34,7 @@ const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
       </div>
 
       {/* Input area */}
+      <div></div>
       {activeUser && <InputArea />}
     </div>
   );

@@ -29,6 +29,7 @@ const InputArea = () => {
     }
   };
 
+  // ** Handle Emoji Select
   const handleEmojiSelect = (emoji: any) => {
     setMessage((prev) => prev + emoji.native);
   };
@@ -79,7 +80,7 @@ const InputArea = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="relative p-2 border-t border-slate-700 bg-slate-800 flex flex-col"
+      className="relative p-2 px-6 md:px-3 border-t border-slate-700 bg-slate-800 flex flex-col"
     >
       {/* Preview Section - Floating */}
       {image && (
@@ -128,11 +129,6 @@ const InputArea = () => {
           />
         </label>
 
-        {/* Update/Edit Button */}
-        <button className="p-2 rounded-lg hover:bg-slate-700 transition text-slate-300">
-          <FiEdit3 size={20} />
-        </button>
-
         {/* Input Box */}
         <input
           type="text"
@@ -140,7 +136,7 @@ const InputArea = () => {
           value={message}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="flex-1 px-4 py-2 rounded-lg bg-slate-900 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+          className="md:flex-1 w-[35%] px-4 py-2 rounded-lg bg-slate-900 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         />
 
         {/* Send Button */}
