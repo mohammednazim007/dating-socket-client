@@ -26,23 +26,25 @@ const FriendList = ({
             className="flex items-center gap-3 p-3 hover:bg-slate-700 cursor-pointer transition rounded-lg mx-2 my-1"
           >
             {/* Avatar + Online Indicator */}
-            <div className="relative w-10 h-10">
-              {friend.avatar ? (
-                <Image
-                  src={friend.avatar}
-                  alt={friend.name}
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-white">
-                  {friend.name?.charAt(0).toUpperCase() || "U"}
-                </div>
-              )}
+            <div className="relative flex-shrink-0">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-50">
+                {friend.avatar ? (
+                  <Image
+                    src={friend.avatar}
+                    alt={friend.name}
+                    width={48}
+                    height={48}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-white">
+                    {friend.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                )}
+              </div>
 
               {isOnline && (
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full"></span>
+                <span className="absolute bottom-2 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full z-50 translate-x-1 translate-y-1"></span>
               )}
             </div>
 
