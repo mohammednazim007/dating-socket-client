@@ -3,7 +3,7 @@ import { useAppSelector } from "@/app/hooks/hooks";
 import MessageArea from "./Message-area";
 import InputArea from "./InputArea";
 import HeaderArea from "./HeaderArea";
-import NoChatSelected from "./NoChatSelected";
+import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
 
 interface ChatAreaProps {
   onToggleSidebar: () => void;

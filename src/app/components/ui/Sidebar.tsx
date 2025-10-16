@@ -9,12 +9,16 @@ import FriendList from "@/app/shared/Friend-List/FriendList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
+import { useState } from "react";
+import NonFriendList from "./NonFriendList";
 
 interface SidebarProps {
   onClose?: () => void;
 }
 
 const Sidebar = ({ onClose }: SidebarProps) => {
+  const [activeTab, setActiveTab] = useState<"chat" | "friends">("chat");
+
   const currentUser = useAppSelector((state: RootState) => state.auth);
   const { activeFriendUsers, isLoading } = useFriendListUser(
     currentUser?.user?._id || ""
@@ -36,6 +40,10 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
   // ** handle routes
   const handleRouteClick = () => route.push("/profile");
+  const handleAddFriend = (user: any) => {
+    console.log("Add friend clicked:", user);
+    // TODO: call your backend / dispatch Redux action
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -58,14 +66,25 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
         {/* Tabs */}
         <div className="flex justify-around py-4 border-b border-slate-700">
-          <button className="text-blue-400 font-semibold hover:text-blue-300 transition">
-            Direct
+          <button
+            onClick={() => setActiveTab("chat")}
+            className={`font-semibold transition ${
+              activeTab === "chat"
+                ? "text-blue-400"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Chat
           </button>
-          <button className="text-slate-400 hover:text-white transition">
-            Group
-          </button>
-          <button className="text-slate-400 hover:text-white transition">
-            Public
+          <button
+            onClick={() => setActiveTab("friends")}
+            className={`font-semibold transition ${
+              activeTab === "friends"
+                ? "text-blue-400"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Friends
           </button>
         </div>
 
@@ -82,14 +101,21 @@ const Sidebar = ({ onClose }: SidebarProps) => {
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <FriendListSkeleton count={6} />
-          ) : activeFriendUsers?.length ? (
-            <FriendList
-              friends={activeFriendUsers}
-              onlineUsers={onlineUsers}
-              onClick={handleClick}
-            />
+          ) : activeTab === "chat" ? (
+            activeFriendUsers?.length ? (
+              <FriendList
+                friends={activeFriendUsers}
+                onlineUsers={onlineUsers}
+                onClick={handleClick}
+              />
+            ) : (
+              <p className="text-center text-slate-400 p-4">No friends found</p>
+            )
           ) : (
-            <p className="text-center text-slate-400 p-4">No friends found</p>
+            <NonFriendList
+              currentUserId={currentUser?.user?._id}
+              onAddFriend={handleAddFriend}
+            />
           )}
         </div>
 

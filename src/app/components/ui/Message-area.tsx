@@ -7,7 +7,7 @@ import { fetchChatHistory } from "@/app/utility/fetchChatHistory";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import DEFAULT_AVATAR from "@/app/assets/profile.png";
-import NoChatSelected from "./NoChatSelected";
+import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
 
 const MessageArea = () => {
   const dispatch = useAppDispatch();

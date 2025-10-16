@@ -1,19 +1,11 @@
 "use client";
 import React, { useState, useCallback, memo } from "react";
 import Image from "next/image";
-import { IFriend } from "@/app/types/friend.types";
-
-interface FriendListProps {
-  friends: IFriend[];
-  onlineUsers: string[];
-  onClick?: (friend: IFriend) => void;
-}
-interface FriendListItemProps {
-  friend: IFriend;
-  isOnline: boolean;
-  isSelected: boolean;
-  onClick: (friend: IFriend) => void;
-}
+import {
+  FriendListItemProps,
+  FriendListProps,
+  IFriend,
+} from "@/app/types/friend.types";
 
 const FriendList = ({ friends, onlineUsers, onClick }: FriendListProps) => {
   const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
