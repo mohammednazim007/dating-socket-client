@@ -1,6 +1,5 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
-import { RootState } from "@/app/redux/store";
 import UserProfile from "../ui/User-profile";
 import useFriendListUser from "@/app/hooks/useFriendList";
 import { motion, AnimatePresence } from "motion/react";
@@ -9,7 +8,7 @@ import FriendList from "@/app/shared/Friend-List/FriendList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import NonFriendList from "./NonFriendList";
 
 interface SidebarProps {
@@ -19,11 +18,11 @@ interface SidebarProps {
 const Sidebar = ({ onClose }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<"chat" | "friends">("chat");
 
-  const currentUser = useAppSelector((state: RootState) => state.auth);
+  const currentUser = useAppSelector((state) => state.auth);
   const { activeFriendUsers, isLoading } = useFriendListUser(
     currentUser?.user?._id || ""
   );
-  const { onlineUsers } = useAppSelector((state: RootState) => state.user);
+  const { onlineUsers } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const route = useRouter();
@@ -48,7 +47,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   };
 
   // ** handle Search Friend
-  const handleUserSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUserSearch = (event: ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.value);
   };
 
