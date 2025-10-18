@@ -18,6 +18,8 @@ const friendSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getFriends.fulfilled, (state, action) => {
+        console.log("Fetched friends:", action.payload);
+
         state.isLoading = false;
         state.friends = action.payload;
         state.isError = null;

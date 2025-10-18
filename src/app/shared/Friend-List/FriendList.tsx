@@ -53,8 +53,8 @@ const FriendListItem = memo(
               <Image
                 src={friend.avatar}
                 alt={friend.name}
-                width={40}
-                height={40}
+                width={400}
+                height={400}
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
