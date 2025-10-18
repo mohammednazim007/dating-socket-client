@@ -19,7 +19,7 @@ const NonFriendList = () => {
     <div className="p-4 text-center text-white">Loading Friends...</div>;
 
   // Handle empty state
-  if (!data.users || data?.users?.length === 0)
+  if (!data || data?.users?.length === 0)
     <div className="p-4 text-center text-gray-500">No friends found.</div>;
 
   return (
