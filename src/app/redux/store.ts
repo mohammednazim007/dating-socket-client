@@ -15,6 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // uses localStorage
+import { friendApi } from "./features/friends/friendApi";
 
 // persist config for the auth slice
 const persistConfig = {
@@ -30,13 +31,14 @@ export const store = configureStore({
     auth: persistedReducer,
     user: onlineReducer,
     friends: friendsReducer,
+    [friendApi.reducerPath]: friendApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(friendApi.middleware), // ✅ Add RTK Query middleware here,
 });
 
 export const persistor = persistStore(store);

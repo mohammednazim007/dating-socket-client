@@ -16,7 +16,7 @@ export const friendApi = createApi({
 
   endpoints: (builder) => ({
     // ✅ 1. Get all friends
-    getFriends: builder.query({
+    getFriends: builder.query<any, void>({
       query: () => `/friend/all-friends`,
       providesTags: ["Friends"],
     }),
