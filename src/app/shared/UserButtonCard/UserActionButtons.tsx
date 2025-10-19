@@ -7,6 +7,7 @@ import {
   useAddFriendMutation,
   useRemoveFriendMutation,
 } from "@/app/redux/features/friends/friendApi";
+import toast from "react-hot-toast";
 
 interface UserAction {
   user: User;
@@ -30,9 +31,9 @@ const UserActionButtons = ({ user }: UserAction) => {
   const handleAddFriend = async (receiverId: string) => {
     try {
       await addFriend({ senderId: currentUser._id, receiverId }).unwrap();
-      console.log("✅ Friend request sent");
+      toast.success("✅ Friend request sent");
     } catch (err) {
-      console.error("❌ Failed to send request:", err);
+      toast.error("❌ Failed to send request:");
     }
   };
 

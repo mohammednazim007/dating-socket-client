@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import UserProfile from "./User-profile";
 import { useAppSelector } from "@/app/hooks/hooks";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
+import Notification from "./Notification";
 
 interface HeaderAreaProps {
   onToggleSidebar: () => void;
@@ -34,9 +35,9 @@ const HeaderArea = ({ onToggleSidebar }: HeaderAreaProps) => {
           )}
         </div>
       </div>
-      <button className="p-2 rounded-lg hover:bg-slate-700 transition">
-        ⋮
-      </button>
+
+      {/* Notification */}
+      <Notification />
     </motion.div>
   );
 };
