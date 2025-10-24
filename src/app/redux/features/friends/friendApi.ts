@@ -1,26 +1,24 @@
+// src/app/redux/features/friends/friendApi.ts
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const friendApi = createApi({
   reducerPath: "friendApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
-    credentials: "include", // send cookies automatically
-    prepareHeaders: (headers) => {
-      // No need to read cookie manually
-      return headers;
-    },
+    credentials: "include",
+    prepareHeaders: (headers) => headers,
   }),
-
   tagTypes: ["Friends"],
 
   endpoints: (builder) => ({
-    // ✅ 1. Get all friends
+    // ✅ 1. Get all friends + pending requests
     getFriends: builder.query<any, void>({
-      query: () => `/friend/all-friends`,
-      providesTags: ["Friends"],
+      query: () => `/friend/non-friends`,
+      providesTags: ["Friends"], // 👈 this query will auto-refetch when invalidated
     }),
 
-    // ✅ 2. Add a friend with mutation
+    // ✅ 2. Send friend request
     addFriend: builder.mutation({
       query: ({
         senderId,
@@ -32,27 +30,60 @@ export const friendApi = createApi({
         url: `/friend/send-request`,
         method: "PUT",
         body: { senderId, receiverId },
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }),
-      invalidatesTags: ["Friends"], // 👈 auto refetch list after add
+      invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
     }),
 
-    // ✅ 3. Remove a friend with mutation
+    // ✅ 3. Remove / Cancel friend or request
     removeFriend: builder.mutation({
       query: (friendId: string) => ({
         url: `/friend/remove/${friendId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Friends"], // 👈 auto refetch list after remove
+      invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
+    }),
+
+    // ✅ 4. Accept friend request
+    acceptFriendRequest: builder.mutation({
+      query: ({
+        senderId,
+        receiverId,
+      }: {
+        senderId: string;
+        receiverId: string;
+      }) => ({
+        url: `/friend/accept-request`,
+        method: "PUT",
+        body: { senderId, receiverId },
+        headers: { "Content-Type": "application/json" },
+      }),
+      invalidatesTags: ["Friends"], // 👈 auto refresh friends state
+    }),
+
+    // ✅ 5. Reject friend request
+    rejectFriendRequest: builder.mutation({
+      query: ({
+        senderId,
+        receiverId,
+      }: {
+        senderId: string;
+        receiverId: string;
+      }) => ({
+        url: `/friend/reject-request`,
+        method: "PUT",
+        body: { senderId, receiverId },
+        headers: { "Content-Type": "application/json" },
+      }),
+      invalidatesTags: ["Friends"], // 👈 auto refresh friends state
     }),
   }),
 });
 
-// 🚀 Export React hooks
 export const {
   useGetFriendsQuery,
   useAddFriendMutation,
   useRemoveFriendMutation,
+  useAcceptFriendRequestMutation,
+  useRejectFriendRequestMutation,
 } = friendApi;
