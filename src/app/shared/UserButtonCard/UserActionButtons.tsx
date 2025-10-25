@@ -2,7 +2,6 @@
 
 import { User } from "@/app/types/auth";
 import CancelButton from "../CancelButton/CancelButton";
-import PendingButton from "../PendingButton/PendingButton";
 import AddButton from "../AddButton/AddButton";
 import { useAppSelector } from "@/app/hooks/hooks";
 import {
@@ -102,24 +101,22 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
       />
     );
 
-  if (currentUserSentRequest) return <PendingButton />;
-
   if (currentUserReceivedRequest)
     return (
       <div className="flex gap-2">
         <button
           onClick={() => handleAcceptRequest(friendUser._id)}
           disabled={isAccepting}
-          className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          className="px-3 py-1 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition text-xs"
         >
           {isAccepting ? "Accepting..." : "Confirm"}
         </button>
         <button
           onClick={() => handleRejectRequest(friendUser._id)}
           disabled={isRejecting}
-          className="px-3 py-1 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
+          className=" bg-gray-300 text-gray-800 rounded-ms hover:bg-gray-400 transition text-sx px-3 py-1 rounded-sm text-xs"
         >
-          {isRejecting ? "Rejecting..." : "Delete"}
+          {isRejecting ? "Rejecting..." : "Cancel"}
         </button>
       </div>
     );

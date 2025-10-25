@@ -9,7 +9,7 @@ interface CancelButtonProps {
 
 const CancelButton = ({ userId, onClick, isLoading }: CancelButtonProps) => {
   const baseClasses =
-    "text-xs font-semibold py-2 px-3 rounded-md shadow-sm transition duration-300 ease-in-out whitespace-nowrap";
+    "text-xs px-3 py-1 rounded-md shadow-sm transition duration-300 ease-in-out whitespace-nowrap";
 
   return (
     <button

@@ -9,30 +9,23 @@ interface AddButtonProps {
 }
 
 const AddButton = ({ userId, onClick, isLoading }: AddButtonProps) => {
-  const baseClasses =
-    "text-xs font-semibold py-2 px-3 rounded-md shadow-sm transition duration-300 ease-in-out whitespace-nowrap";
-
   return (
     <button
       type="button"
       onClick={() => onClick(userId)}
       disabled={isLoading}
-      // UI/Animation: scale-105 on hover, blue color
-      className={`${baseClasses} bg-blue-500 text-white 
-                  hover:bg-blue-600 hover:scale-[1.02] 
-                  disabled:bg-blue-400 disabled:cursor-wait 
-                  flex items-center justify-center space-x-1`}
+      className={``}
     >
       {isLoading ? (
-        <>
+        <span className="bg-gray-300 text-gray-800 rounded-ms hover:bg-gray-400 transition text-sx px-2 py-1 rounded-sm text-xs flex items-center space-x-2">
           <FaSpinner className="w-3 h-3 animate-spin" />
-          <span>Sending...</span>
-        </>
+          <span className="text-sx">Sending...</span>
+        </span>
       ) : (
-        <>
+        <span className="flex items-center px-2 py-1 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition text-xs space-x-2">
           <FaUserPlus className="w-3 h-3" />
-          <span>Add</span>
-        </>
+          <span className="text-sx">Connect</span>
+        </span>
       )}
     </button>
   );
