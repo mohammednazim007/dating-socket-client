@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
 import { ChangeEvent, useState } from "react";
 import NonFriendList from "./NonFriendList";
+import { useGetAcceptedFriendsQuery } from "@/app/redux/features/friends/friendApi";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -19,7 +20,8 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<"chat" | "friends">("chat");
 
   const { user } = useAppSelector((state) => state.auth);
-  const { activeFriendUsers, isLoading } = useFriendListUser(user?._id || "");
+  // const { activeFriendUsers, isLoading } = useFriendListUser(user?._id || "");
+  const { data, isLoading } = useGetAcceptedFriendsQuery();
   const { onlineUsers } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
@@ -101,9 +103,9 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           {isLoading ? (
             <FriendListSkeleton count={6} />
           ) : activeTab === "chat" ? (
-            activeFriendUsers?.length ? (
+            data?.users?.length ? (
               <FriendList
-                friends={activeFriendUsers}
+                friends={data?.users}
                 onlineUsers={onlineUsers}
                 onClick={handleClick}
               />

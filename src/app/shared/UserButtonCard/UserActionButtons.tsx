@@ -32,6 +32,7 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
   if (!currentUser) return null;
 
   // ---- HANDLERS ----
+  //* Add Friend Handler with receiverId
   const handleAddFriend = async (receiverId: string) => {
     try {
       await addFriend({
@@ -48,16 +49,7 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
     }
   };
 
-  const handleRemoveFriend = async (friendId: string) => {
-    try {
-      await removeFriend(friendId).unwrap();
-      toast.success("🗑️ Friend removed or request cancelled");
-      // refetch();
-    } catch {
-      toast.error("❌ Failed to remove friend");
-    }
-  };
-
+  // * Accept Friend Request Handler with senderId
   const handleAcceptRequest = async (senderId: string) => {
     try {
       await acceptRequest({ senderId, receiverId: currentUser._id }).unwrap();
@@ -65,6 +57,16 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
       // refetch();
     } catch {
       toast.error("❌ Failed to accept request");
+    }
+  };
+
+  const handleRemoveFriend = async (friendId: string) => {
+    try {
+      await removeFriend(friendId).unwrap();
+      toast.success("🗑️ Friend removed or request cancelled");
+      // refetch();
+    } catch {
+      toast.error("❌ Failed to remove friend");
     }
   };
 

@@ -18,6 +18,12 @@ export const friendApi = createApi({
       providesTags: ["Friends"], // 👈 this query will auto-refetch when invalidated
     }),
 
+    // 2. Get the accepted friends list
+    getAcceptedFriends: builder.query<any, void>({
+      query: () => `/friend/accepted-friends`,
+      providesTags: ["Friends"],
+    }),
+
     // ✅ 2. Send friend request
     addFriend: builder.mutation({
       query: ({
@@ -35,16 +41,7 @@ export const friendApi = createApi({
       invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
     }),
 
-    // ✅ 3. Remove / Cancel friend or request
-    removeFriend: builder.mutation({
-      query: (friendId: string) => ({
-        url: `/friend/remove/${friendId}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
-    }),
-
-    // ✅ 4. Accept friend request
+    // ✅ 3. Accept friend request
     acceptFriendRequest: builder.mutation({
       query: ({
         senderId,
@@ -59,6 +56,15 @@ export const friendApi = createApi({
         headers: { "Content-Type": "application/json" },
       }),
       invalidatesTags: ["Friends"], // 👈 auto refresh friends state
+    }),
+
+    // ✅ 4. Remove / Cancel friend or request
+    removeFriend: builder.mutation({
+      query: (friendId: string) => ({
+        url: `/friend/remove/${friendId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
     }),
 
     // ✅ 5. Reject friend request
@@ -82,6 +88,7 @@ export const friendApi = createApi({
 
 export const {
   useGetFriendsQuery,
+  useGetAcceptedFriendsQuery,
   useAddFriendMutation,
   useRemoveFriendMutation,
   useAcceptFriendRequestMutation,

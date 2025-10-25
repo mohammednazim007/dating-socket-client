@@ -1,5 +1,6 @@
 "use client";
 import { useGetFriendsQuery } from "@/app/redux/features/friends/friendApi";
+import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
 import UserActionButtons from "@/app/shared/UserButtonCard/UserActionButtons";
 import { User } from "@/app/types/auth";
 import { formatLastSeenTime } from "@/app/utility/formatLastSeenTime";
@@ -15,8 +16,7 @@ const NonFriendList = () => {
   const handleSelected = (id: string) => setSelectedId(id);
 
   // Handle loading state
-  if (isLoading)
-    return <div className="p-4 text-center text-white">Loading Friends...</div>;
+  if (isLoading) return <FriendListSkeleton count={5} />;
 
   // Handle empty state
   if (!data || data?.users?.length === 0)
