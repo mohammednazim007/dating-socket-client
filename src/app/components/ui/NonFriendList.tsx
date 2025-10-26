@@ -9,8 +9,6 @@ import { useState } from "react";
 
 const NonFriendList = () => {
   const [selectId, setSelectedId] = useState<string>();
-
-  // Use the friends data from the Redux store
   const { data, isLoading } = useGetFriendsQuery();
 
   const handleSelected = (id: string) => setSelectedId(id);
