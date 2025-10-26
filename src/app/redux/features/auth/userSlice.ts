@@ -37,8 +37,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(refreshUser.fulfilled, (state, action: PayloadAction<User>) => {
-        console.log("payload", action.payload);
-
         state.user = action.payload;
         state.loading = false;
       })

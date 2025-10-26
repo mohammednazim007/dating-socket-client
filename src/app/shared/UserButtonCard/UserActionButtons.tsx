@@ -60,7 +60,7 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
     console.log("id", receiverId, friendUser);
 
     try {
-      // await deleteFriendRequest(receiverId).unwrap();
+      await deleteFriendRequest(receiverId).unwrap();
       toast.success("Request cancelled");
       refetch();
     } catch (error: any) {
