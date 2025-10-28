@@ -18,7 +18,7 @@ interface UserActionProps {
 
 const UserActionButtons = ({ friendUser }: UserActionProps) => {
   const { user: currentUser } = useAppSelector((state) => state.auth);
-  const { refetch } = useGetFriendsQuery(); // 👈 re-fetch manually if needed
+  const { refetch } = useGetFriendsQuery(); // ✅ get refetch function here
 
   const [sendFriendRequest, { isLoading: isAdding }] =
     useSendFriendRequestMutation();
@@ -39,7 +39,6 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
       }).unwrap();
 
       toast.success("✅ Friend request sent");
-      refetch(); // 👈 ensures UI updates
     } catch (err: any) {
       toast.error(err?.data?.message || "❌ Failed to send request");
     }
@@ -50,7 +49,6 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
     try {
       await acceptRequest({ senderId, receiverId: currentUser._id }).unwrap();
       toast.success("🎉 Friend request accepted");
-      // refetch();
     } catch {
       toast.error("❌ Failed to accept request");
     }
@@ -61,7 +59,7 @@ const UserActionButtons = ({ friendUser }: UserActionProps) => {
     try {
       await deleteFriendRequest(receiverId).unwrap();
       toast.success("Request cancelled");
-      // refetch();
+      await refetch(); // ✅ manually refetch the friends list
     } catch (error: any) {
       toast.error(error?.data?.message || "❌ Failed to cancel request");
     }

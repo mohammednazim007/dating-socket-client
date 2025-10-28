@@ -7,7 +7,10 @@ export const friendApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
     credentials: "include",
-    prepareHeaders: (headers) => headers,
+    prepareHeaders: (headers) => {
+      headers.set("Accept", "application/json");
+      return headers;
+    },
   }),
   tagTypes: ["Friends"],
 
@@ -36,7 +39,6 @@ export const friendApi = createApi({
         url: `/friend/send-request`,
         method: "PUT",
         body: { senderId, receiverId },
-        headers: { "Content-Type": "application/json" },
       }),
       invalidatesTags: ["Friends"], // 👈 triggers getFriends() refetch
     }),
@@ -53,7 +55,6 @@ export const friendApi = createApi({
         url: `/friend/accept-request`,
         method: "PUT",
         body: { senderId, receiverId },
-        headers: { "Content-Type": "application/json" },
       }),
       invalidatesTags: ["Friends"], // 👈 auto refresh friends state
     }),
@@ -63,7 +64,6 @@ export const friendApi = createApi({
       query: (receiverId: string) => ({
         url: `/friend/cancel-request/${receiverId}`,
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
       }),
       invalidatesTags: ["Friends"], // 👈 auto refresh friends state
     }),
