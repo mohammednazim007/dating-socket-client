@@ -17,8 +17,6 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid, clear it
-      localStorage.removeItem("token");
       // Redirect to signin page
       window.location.href = "/signin";
     }

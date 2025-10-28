@@ -5,7 +5,7 @@ import { useAppDispatch } from "@/app/hooks/hooks";
 import {
   addNewMessage,
   setOnlineUsers,
-} from "@/app/redux/features/friend-slice/message-user-slice";
+} from "@/app/redux/features/user-slice/message-user-slice";
 
 export const useSocket = (userId: string) => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, IUserState } from "@/app/types/auth";
+import { refreshUser } from "./refreshUser";
 
 const initialState: IUserState = {
   user: null,
@@ -28,6 +29,21 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(refreshUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refreshUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(refreshUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

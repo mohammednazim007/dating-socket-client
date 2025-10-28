@@ -37,23 +37,14 @@ const SignInPage = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("login response:", response);
-
       if (response.status === 200) {
         dispatch(setUser(response.data.user));
         router.push("/");
       }
     } catch (err: any) {
-      const fields = err.response?.data?.fields;
-      if (fields?.length) {
-        fields.forEach((f: { field: string; message: string }) =>
-          setError(f.field as keyof SignInFormData, { message: f.message })
-        );
-      } else {
-        setError("root", {
-          message: err.response?.data?.message || "Something went wrong",
-        });
-      }
+      setError("root", {
+        message: err.response?.data?.message || "Something went wrong",
+      });
     } finally {
       setIsLoading(false);
     }

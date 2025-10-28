@@ -2,20 +2,21 @@ import { motion } from "motion/react";
 import UserProfile from "./User-profile";
 import { useAppSelector } from "@/app/hooks/hooks";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
+import Notification from "./Notification";
 
 interface HeaderAreaProps {
   onToggleSidebar: () => void;
 }
 
 const HeaderArea = ({ onToggleSidebar }: HeaderAreaProps) => {
-  const { activeUser } = useAppSelector((state) => state.friend);
+  const { activeUser } = useAppSelector((state) => state.user);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="flex items-center justify-between p-2 pl-6 border-b border-slate-700 bg-slate-800 shadow-md"
+      className="flex items-center justify-between px-5 border-b border-slate-700 bg-slate-800 shadow-md"
     >
       <div className="flex items-center gap-3">
         {/* Mobile toggle button */}
@@ -34,9 +35,9 @@ const HeaderArea = ({ onToggleSidebar }: HeaderAreaProps) => {
           )}
         </div>
       </div>
-      <button className="p-2 rounded-lg hover:bg-slate-700 transition">
-        ⋮
-      </button>
+
+      {/* Notification */}
+      <Notification />
     </motion.div>
   );
 };

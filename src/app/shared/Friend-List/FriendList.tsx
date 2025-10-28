@@ -1,25 +1,14 @@
 "use client";
 import React, { useState, useCallback, memo } from "react";
 import Image from "next/image";
-import { IFriend } from "@/app/types/friend.types";
-
-interface FriendListProps {
-  friends: IFriend[];
-  onlineUsers: string[];
-  onClick?: (friend: IFriend) => void;
-}
-interface FriendListItemProps {
-  friend: IFriend;
-  isOnline: boolean;
-  isSelected: boolean;
-  onClick: (friend: IFriend) => void;
-}
+import { User } from "@/app/types/auth";
+import { FriendListItemProps, FriendListProps } from "./interface";
 
 const FriendList = ({ friends, onlineUsers, onClick }: FriendListProps) => {
   const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
 
   const handleFriendClick = useCallback(
-    (friend: IFriend) => {
+    (friend: User) => {
       setSelectedFriendId(friend._id);
       onClick?.(friend); // optional chaining is cleaner
     },
@@ -28,7 +17,7 @@ const FriendList = ({ friends, onlineUsers, onClick }: FriendListProps) => {
 
   return (
     <div className="flex flex-col">
-      {friends.map((friend) => {
+      {friends?.map((friend) => {
         const isOnline = onlineUsers.includes(friend._id);
         const isSelected = friend._id === selectedFriendId;
 
@@ -49,7 +38,7 @@ const FriendList = ({ friends, onlineUsers, onClick }: FriendListProps) => {
 const FriendListItem = memo(
   ({ friend, isOnline, isSelected, onClick }: FriendListItemProps) => {
     const baseClasses =
-      "flex items-center gap-3 p-3 cursor-pointer transition rounded-lg mx-2 my-1";
+      "flex items-center gap-3 p-3 cursor-pointer transition rounded-lg mx-2 my-[3px]";
     const selectionClasses = isSelected ? "bg-slate-700" : "hover:bg-slate-700";
 
     return (
@@ -64,8 +53,8 @@ const FriendListItem = memo(
               <Image
                 src={friend.avatar}
                 alt={friend.name}
-                width={40}
-                height={40}
+                width={400}
+                height={400}
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (

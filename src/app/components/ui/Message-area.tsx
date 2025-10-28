@@ -7,13 +7,14 @@ import { fetchChatHistory } from "@/app/utility/fetchChatHistory";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import DEFAULT_AVATAR from "@/app/assets/profile.png";
-import NoChatSelected from "./NoChatSelected";
+import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
 
 const MessageArea = () => {
   const dispatch = useAppDispatch();
-  const { activeUser, chat } = useAppSelector((state) => state.friend);
+  const { activeUser, chat } = useAppSelector((state) => state.user);
   const currentUser = useAppSelector((state) => state.auth.user);
 
+  // ** Initialize socket connection
   useSocket(currentUser?._id || "");
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 

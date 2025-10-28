@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../lib/axios";
-import { IChatMessage } from "../redux/features/friend-slice/interface";
+import { IChatMessage } from "../redux/features/user-slice/interface";
 
 // ✅ Send message (text or media)
 export const sendMessage = createAsyncThunk<

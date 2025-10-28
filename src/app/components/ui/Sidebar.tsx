@@ -1,27 +1,28 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
-import { RootState } from "@/app/redux/store";
 import UserProfile from "../ui/User-profile";
-import useFriendListUser from "@/app/hooks/useFriendList";
 import { motion, AnimatePresence } from "motion/react";
-import { setActiveUser } from "@/app/redux/features/friend-slice/message-user-slice";
+import { setActiveUser } from "@/app/redux/features/user-slice/message-user-slice";
 import FriendList from "@/app/shared/Friend-List/FriendList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
+import { ChangeEvent, useState } from "react";
+import NonFriendList from "./NonFriendList";
+import { useGetAcceptedFriendsQuery } from "@/app/redux/features/friends/friendApi";
 
 interface SidebarProps {
   onClose?: () => void;
 }
 
 const Sidebar = ({ onClose }: SidebarProps) => {
-  const currentUser = useAppSelector((state: RootState) => state.auth);
-  const { activeFriendUsers, isLoading } = useFriendListUser(
-    currentUser?.user?._id || ""
-  );
-  const { onlineUsers } = useAppSelector((state: RootState) => state.friend);
-  const dispatch = useAppDispatch();
+  const [activeTab, setActiveTab] = useState<"chat" | "friends">("chat");
 
+  const { user } = useAppSelector((state) => state.auth);
+  const { data, isLoading } = useGetAcceptedFriendsQuery();
+  const { onlineUsers } = useAppSelector((state) => state.user);
+
+  const dispatch = useAppDispatch();
   const route = useRouter();
 
   // ** Handle friend to add active user
@@ -36,6 +37,11 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
   // ** handle routes
   const handleRouteClick = () => route.push("/profile");
+
+  // ** handle Search Friend
+  const handleUserSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -58,14 +64,25 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
         {/* Tabs */}
         <div className="flex justify-around py-4 border-b border-slate-700">
-          <button className="text-blue-400 font-semibold hover:text-blue-300 transition">
-            Direct
+          <button
+            onClick={() => setActiveTab("chat")}
+            className={`font-semibold transition ${
+              activeTab === "chat"
+                ? "text-blue-400"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Chat
           </button>
-          <button className="text-slate-400 hover:text-white transition">
-            Group
-          </button>
-          <button className="text-slate-400 hover:text-white transition">
-            Public
+          <button
+            onClick={() => setActiveTab("friends")}
+            className={`font-semibold transition ${
+              activeTab === "friends"
+                ? "text-blue-400"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Friends
           </button>
         </div>
 
@@ -74,6 +91,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           <input
             type="text"
             placeholder="Search"
+            onChange={(e) => handleUserSearch(e)}
             className="w-full rounded-lg bg-slate-700 px-3 py-2 text-sm placeholder-slate-400 text-white outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
         </div>
@@ -82,24 +100,25 @@ const Sidebar = ({ onClose }: SidebarProps) => {
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <FriendListSkeleton count={6} />
-          ) : activeFriendUsers?.length ? (
-            <FriendList
-              friends={activeFriendUsers}
-              onlineUsers={onlineUsers}
-              onClick={handleClick}
-            />
+          ) : activeTab === "chat" ? (
+            data?.users?.length ? (
+              <FriendList
+                friends={data?.users}
+                onlineUsers={onlineUsers}
+                onClick={handleClick}
+              />
+            ) : (
+              <p className="text-center text-slate-400 p-4">No friends found</p>
+            )
           ) : (
-            <p className="text-center text-slate-400 p-4">No friends found</p>
+            <NonFriendList />
           )}
         </div>
 
         {/* Profile + Sign Out */}
-        {currentUser?.user && (
-          <div className="p-2 border-t border-slate-700 flex items-center justify-between gap-2 bg-slate-900 ">
-            <UserProfile
-              currentUser={currentUser.user}
-              isTimeAvailable={false}
-            />
+        {user && (
+          <div className="px-2 border-t border-slate-700 flex items-center justify-between gap-2 bg-slate-900 ">
+            <UserProfile currentUser={user} isTimeAvailable={false} />
             <CiSettings
               onClick={() => handleRouteClick()}
               size={29}
