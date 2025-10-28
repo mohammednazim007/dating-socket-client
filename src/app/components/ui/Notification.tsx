@@ -11,7 +11,7 @@ import timeAgo from "@/app/utility/timeAgo";
 const Notification = () => {
   const {
     notifications,
-    count,
+    unreadCount,
     readSingleNotification,
     markAllNotificationsRead,
   } = useNotificationSocket();
@@ -30,8 +30,8 @@ const Notification = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const showBadge = count > 0;
-  const displayCount = count > 20 ? "20+" : count;
+  const showBadge = unreadCount > 0;
+  const displayUnreadCount = unreadCount > 20 ? "20+" : unreadCount;
 
   return (
     <div className="relative" ref={popupRef}>
@@ -48,13 +48,13 @@ const Notification = () => {
 
         {showBadge && (
           <motion.span
-            key={count} // animate when count changes
+            key={unreadCount} // animate when unreadCount changes
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             className="absolute top-2 right-2 translate-x-1/2 -translate-y-1/2 px-1.5 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full min-w-[16px] text-center border border-gray-900"
           >
-            {displayCount}
+            {displayUnreadCount}
           </motion.span>
         )}
       </button>

@@ -8,6 +8,7 @@ import { INotification } from "../types/notificationType";
 export const useNotificationSocket = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [notifications, setNotifications] = useState<INotification[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const [socket, setSocket] = useState<any>(null);
 
   // Connect socket when user exists
@@ -17,12 +18,8 @@ export const useNotificationSocket = () => {
     const socketInstance = connectSocket(user._id);
     setSocket(socketInstance);
 
-    // ✅ Listen for unread notifications
-    // socketInstance.on("unread_notifications", (data: INotification[]) => {
-    //   setNotifications(data);
+    // ✅ Listen for all notifications
 
-    //   console.log("📬 Unread notifications:", data);
-    // });
     socketInstance.on("all_notifications", (data: INotification[]) => {
       setNotifications(data);
       console.log("📬 All notifications:", data);
@@ -31,13 +28,20 @@ export const useNotificationSocket = () => {
     // ✅ Cleanup on unmount
     return () => {
       socketInstance.off("all_notifications");
-      // socketInstance.off("unread_notifications");
       disconnectSocket();
       console.log("🔌 Socket disconnected");
     };
   }, [user?._id]);
 
   // ----------------- FUNCTIONS -----------------
+  // unread count calculation
+  useEffect(() => {
+    const count = notifications?.reduce(
+      (acc, notification) => acc + (notification.isRead ? 0 : 1),
+      0
+    );
+    setUnreadCount(count);
+  }, [notifications]);
 
   // Mark single notification as read
   const readSingleNotification = useCallback(
@@ -58,7 +62,7 @@ export const useNotificationSocket = () => {
 
   return {
     notifications,
-    count: notifications.length,
+    unreadCount,
     readSingleNotification,
     markAllNotificationsRead,
   };
