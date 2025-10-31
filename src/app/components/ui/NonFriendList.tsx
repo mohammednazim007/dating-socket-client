@@ -4,6 +4,7 @@ import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkelet
 import UserActionButtons from "@/app/shared/UserButtonCard/UserActionButtons";
 import { User } from "@/app/types/auth";
 import { formatLastSeenTime } from "@/app/utility/formatLastSeenTime";
+import timeAgo from "@/app/utility/timeAgo";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -63,7 +64,7 @@ const NonFriendList = () => {
                 {user.name || "Unknown"}
               </h2>
               <p className={`text-xs text-gray-400 mb-1`}>
-                {formatLastSeenTime(user.lastActive)}
+                Last active {timeAgo(`${user?.lastActive}`)}
               </p>
               {/* UserActionButtons component */}
               <UserActionButtons friendUser={user} />

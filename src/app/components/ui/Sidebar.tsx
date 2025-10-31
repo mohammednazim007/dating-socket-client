@@ -97,7 +97,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
         </div>
 
         {/* Friend list profile */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto no-scrollbar">
           {isLoading ? (
             <FriendListSkeleton count={6} />
           ) : activeTab === "chat" ? (

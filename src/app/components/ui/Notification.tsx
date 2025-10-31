@@ -32,6 +32,7 @@ const Notification = () => {
 
   const showBadge = unreadCount > 0;
   const displayUnreadCount = unreadCount > 20 ? "20+" : unreadCount;
+  console.log("time", timeAgo("2025-10-28T12:23:53.510+00:00"));
 
   return (
     <div className="relative" ref={popupRef}>
@@ -67,7 +68,7 @@ const Notification = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-gray-900 shadow-2xl rounded-md border border-gray-800 z-50"
+            className="absolute right-0 mt-2 w-80 max-h-[calc(100vh-150px)] overflow-y-auto bg-gray-900 shadow-2xl rounded-md border border-gray-800 z-50 no-scrollbar"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-gray-700">
@@ -91,18 +92,21 @@ const Notification = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
                   onClick={() => readSingleNotification(item._id)}
-                  className={`flex items-start gap-3 p-3 border-b cursor-pointer transition hover:bg-gray-800 ${
+                  className={`flex items-start gap-3 p-3 border-b border-gray-700 cursor-pointer transition hover:bg-gray-800 ${
                     !item.isRead ? "bg-gray-800" : ""
                   }`}
                 >
                   <div className="relative">
-                    <Image
-                      src={item.avatar || avatar.src}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full object-cover"
-                    />
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500/80 flex-shrink-0">
+                      <Image
+                        width={400}
+                        height={400}
+                        priority={true}
+                        src={item?.avatar || avatar.src}
+                        alt={item?.name || "User Avatar"}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     {!item.isRead && (
                       <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse border border-gray-900"></span>
                     )}
