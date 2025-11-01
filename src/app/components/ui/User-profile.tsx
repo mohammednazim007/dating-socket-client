@@ -1,7 +1,7 @@
 import Image from "next/image";
 import avatar from "@/app/assets/profile.png";
 import { User } from "@/app/types/auth";
-import { formatLastSeenTime } from "@/app/utility/formatLastSeenTime";
+import timeAgo from "@/app/utility/timeAgo";
 
 interface UserProfileProps {
   currentUser: User | null;
@@ -36,9 +36,7 @@ const UserProfile = ({ currentUser, isTimeAvailable }: UserProfileProps) => {
             isTimeAvailable ? "text-gray-400" : "text-blue-400 font-medium"
           }`}
         >
-          {isTimeAvailable
-            ? formatLastSeenTime(`${currentUser?.lastActive}`)
-            : "Online"}
+          {isTimeAvailable ? timeAgo(`${currentUser?.lastActive}`) : "Online"}
         </p>
       </div>
     </div>
