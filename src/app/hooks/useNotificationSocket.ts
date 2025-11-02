@@ -19,10 +19,9 @@ export const useNotificationSocket = () => {
     setSocket(socketInstance);
 
     // ✅ Listen for all notifications
-
     socketInstance.on("all_notifications", (data: INotification[]) => {
       setNotifications(data);
-      console.log("📬 All notifications:", data);
+      // console.log("📬 All notifications:", data);
     });
 
     // ✅ Cleanup on unmount

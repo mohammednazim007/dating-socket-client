@@ -34,7 +34,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
     () =>
       debounce((value: string) => {
         setSearchTerm(value);
-      }, 500),
+      }, 800),
     []
   );
 
