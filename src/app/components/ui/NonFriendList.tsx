@@ -1,5 +1,6 @@
 "use client";
 
+import { useFilteredFriends } from "@/app/hooks/useFilteredFriends";
 import { useGetFriendsQuery } from "@/app/redux/features/friends/friendApi";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
 import UserActionButtons from "@/app/shared/UserButtonCard/UserActionButtons";
@@ -8,26 +9,28 @@ import timeAgo from "@/app/utility/timeAgo";
 import Image from "next/image";
 import { useState } from "react";
 
-const NonFriendList = () => {
+const NonFriendList = ({ searchTerm }: { searchTerm: string }) => {
   const [selectId, setSelectedId] = useState<string>();
 
   const { data, isLoading } = useGetFriendsQuery();
-  console.log("NonFriendList", data?.users);
 
   const handleSelected = (id: string) => setSelectedId(id);
+  // ✅ Use the reusable hook
+  const filteredFriends = useFilteredFriends(data?.users, searchTerm);
 
   // Handle loading state
   if (isLoading) return <FriendListSkeleton count={5} />;
 
   // Handle empty state
-  if (!data || data?.users?.length === 0)
+  if (!filteredFriends?.length)
     return (
       <div className="p-4 text-center text-gray-500">No friends found.</div>
     );
 
+  console.log("NonFriendList", filteredFriends);
   return (
     <div className="flex flex-col divide-y divide-slate-700">
-      {data?.users?.map((user: User) => (
+      {filteredFriends?.map((user: User) => (
         <div
           onClick={() => handleSelected(user._id)}
           key={user._id}

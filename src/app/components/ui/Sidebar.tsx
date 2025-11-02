@@ -7,18 +7,20 @@ import FriendList from "@/app/shared/FriendSidebarList/FriendSidebarList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import NonFriendList from "./NonFriendList";
 import { useGetAcceptedFriendsQuery } from "@/app/redux/features/friends/friendApi";
-import { BsChat, BsPeople } from "react-icons/bs";
 import SidebarTabs from "@/app/shared/SidebarTabs/SidebarTabs";
+import { debounce } from "@/app/utility/debounce";
+import { useFilteredFriends } from "@/app/hooks/useFilteredFriends";
 interface SidebarProps {
   onClose?: () => void;
 }
 
 const Sidebar = ({ onClose }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<"chat" | "friends">("friends");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [inputValue, setInputValue] = useState(""); // ✅ back, but lightweight
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ used for filtering
 
   const { user } = useAppSelector((state) => state.auth);
   const { data, isLoading } = useGetAcceptedFriendsQuery();
@@ -27,7 +29,20 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const route = useRouter();
 
-  // ** Handle friend to add active user
+  // ✅ Debounce searchTerm updates (searchTerm is only for filtering)
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchTerm(value);
+      }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => debouncedSearch.cancel();
+  }, [debouncedSearch]);
+
+  // ✅** Handle friend to add active user
   const handleClick = (friend: any) => {
     dispatch(setActiveUser(friend));
 
@@ -37,13 +52,18 @@ const Sidebar = ({ onClose }: SidebarProps) => {
     }
   };
 
-  // ** handle routes
-  const handleRouteClick = () => route.push("/profile");
-
-  // ** 2. Update search handler to set state
+  // ✅ Update input instantly & trigger debounce for searchTerm
   const handleUserSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    const value = event.target.value;
+    setInputValue(value);
+    debouncedSearch(value);
   };
+
+  // ✅ Memoized filtering
+  const filteredFriends = useFilteredFriends(data?.users, searchTerm);
+
+  // ✅** handle routes
+  const handleRouteClick = () => route.push("/profile");
 
   return (
     <AnimatePresence mode="wait">
@@ -71,7 +91,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           <input
             type="text"
             placeholder="Search"
-            value={searchTerm}
+            value={inputValue}
             onChange={(e) => handleUserSearch(e)}
             className="w-full rounded-lg bg-slate-700 px-3 py-2 text-sm placeholder-slate-400 text-white outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
@@ -82,18 +102,17 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           {isLoading ? (
             <FriendListSkeleton count={6} />
           ) : activeTab === "chat" ? (
-            data?.users?.length ? (
+            filteredFriends?.length ? (
               <FriendList
-                friends={data?.users}
+                friends={filteredFriends}
                 onlineUsers={onlineUsers}
                 onClick={handleClick}
-                searchTerm={searchTerm}
               />
             ) : (
               <p className="text-center text-slate-400 p-4">No friends found</p>
             )
           ) : (
-            <NonFriendList />
+            <NonFriendList searchTerm={searchTerm} />
           )}
         </div>
         {/* Profile + Sign Out */}
