@@ -30,7 +30,7 @@ const ButtonIndicator: React.FC<ButtonIndicatorProps> = ({
           transition={{
             duration: 1,
             repeat: Infinity,
-            delay: i * 0.2,
+            delay: i * 0.5,
             ease: "easeInOut",
           }}
         />
