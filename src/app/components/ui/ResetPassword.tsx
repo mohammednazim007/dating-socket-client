@@ -73,7 +73,6 @@ const ResetPassword: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            // Unified button styling: lime colors and consistent disabled state
             className="w-full py-2 px-4 rounded-lg font-semibold transition duration-200 ease-in-out bg-lime-500 text-slate-900 hover:bg-lime-600 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Sending..." : "Send OTP"}

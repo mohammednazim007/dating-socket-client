@@ -1,17 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+"use client";
+import React, {
+  useState,
+  useRef,
+  KeyboardEvent,
+  RefObject,
+  FC,
+  createRef,
+} from "react";
 import { motion } from "motion/react";
 
-// Helper component for a single OTP input
 interface OtpInputProps {
   value: string;
   onChange: (value: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
+  inputRef: RefObject<HTMLInputElement | null>;
   isFocused: boolean;
 }
 
-const OtpInput: React.FC<OtpInputProps> = ({
+const OtpInput: FC<OtpInputProps> = ({
   value,
   onChange,
   onKeyDown,
@@ -22,75 +29,62 @@ const OtpInput: React.FC<OtpInputProps> = ({
   <input
     type="text"
     maxLength={1}
+    value={value}
+    ref={inputRef}
     onChange={(e) => onChange(e.target.value)}
     onKeyDown={onKeyDown}
     onFocus={onFocus}
-    ref={inputRef}
-    value={value}
-    className={`w-12 h-16 text-center text-3xl font-bold rounded-lg border-2 ${
-      isFocused ? "border-lime-500 ring-4 ring-lime-500/50" : "border-slate-300"
-    } bg-white text-slate-900 focus:outline-none transition duration-150 ease-in-out shadow-md`}
-    style={{ caretColor: "transparent" }}
+    className={`w-12 h-16 text-center text-3xl font-bold rounded-lg border-2 
+      ${
+        isFocused
+          ? "border-lime-500 ring-2 ring-lime-500/50"
+          : "border-slate-600"
+      } 
+      bg-slate-700 text-white focus:outline-none transition duration-150 ease-in-out shadow-md`}
+    style={{ caretColor: "lime" }}
   />
 );
 
-const VerifyOTP: React.FC = () => {
-  const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+const VerifyOTP: FC = () => {
+  const length = 6;
+  const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
   const [loading, setLoading] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState<number>(0);
+  const [focusedIndex, setFocusedIndex] = useState(0);
 
-  // Refs for inputs
   const inputRefs = useRef(
-    Array.from({ length: 6 }, () => React.createRef<HTMLInputElement>())
+    [...Array(length)].map(() => createRef<HTMLInputElement>())
   );
 
+  const focusInput = (index: number) => {
+    inputRefs.current[index]?.current?.focus();
+    setFocusedIndex(index);
+  };
+
   const handleChange = (value: string, index: number) => {
-    if (/^[0-9]?$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+    if (!/^\d?$/.test(value)) return;
 
-      // Move focus to next input
-      if (value && index < otp.length - 1) {
-        inputRefs.current[index + 1].current?.focus();
-        setFocusedIndex(index + 1);
-      }
-    }
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < length - 1) focusInput(index + 1);
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].current?.focus();
-      setFocusedIndex(index - 1);
-    }
-    if (e.key === "ArrowRight" && index < otp.length - 1) {
-      inputRefs.current[index + 1].current?.focus();
-      setFocusedIndex(index + 1);
-    } else if (e.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1].current?.focus();
-      setFocusedIndex(index - 1);
-    }
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0)
+      return focusInput(index - 1);
+    if (e.key === "ArrowRight" && index < length - 1)
+      return focusInput(index + 1);
+    if (e.key === "ArrowLeft" && index > 0) return focusInput(index - 1);
   };
 
-  const handleVerify = () => {
-    const fullOtp = otp.join("");
-    if (fullOtp.length === otp.length) {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        console.log(`Verifying OTP: ${fullOtp}`);
-      }, 1500);
-    }
+  const handleVerify = async () => {
+    if (otp.some((d) => !d)) return;
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1500));
+    setLoading(false);
+    console.log(`Verifying OTP: ${otp.join("")}`);
   };
-
-  const handleResend = () => {
-    console.log("Resending OTP...");
-  };
-
-  const allDigitsEntered = otp.every((digit) => digit !== "");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f172a] p-4">
@@ -99,36 +93,35 @@ const VerifyOTP: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -50 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm flex flex-col items-center"
+        className="bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-sm flex flex-col items-center"
       >
-        {/* OTP Heading */}
-        <h2 className="text-2xl font-bold mb-2 text-slate-800">
-          Enter OTP Code
-        </h2>
-        <p className="text-xs text-center text-slate-500 mb-8 max-w-[200px]">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam
-          nonummy nibh.
+        {/* Heading */}
+        <h2 className="text-2xl font-bold mb-2 text-white">Enter OTP Code</h2>
+
+        {/* Subtext */}
+        <p className="text-xs text-center text-slate-400 mb-8 max-w-[200px]">
+          Please enter the 6-digit code sent to your email address.
         </p>
 
         {/* OTP Inputs */}
         <div className="flex space-x-2 mb-8">
-          {otp.map((digit, index) => (
+          {otp.map((digit, i) => (
             <OtpInput
-              key={index}
+              key={i}
               value={digit}
-              onChange={(value) => handleChange(value, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              inputRef={inputRefs.current[index]}
-              isFocused={index === focusedIndex}
-              onFocus={() => setFocusedIndex(index)}
+              onChange={(val) => handleChange(val, i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              inputRef={inputRefs.current[i]}
+              isFocused={i === focusedIndex}
+              onFocus={() => setFocusedIndex(i)}
             />
           ))}
         </div>
 
-        {/* Resend Code */}
+        {/* Resend Button */}
         <button
-          onClick={handleResend}
-          className="text-sm font-semibold text-slate-600 hover:text-slate-800 transition duration-150 ease-in-out mb-6"
+          onClick={() => console.log("Resending OTP...")}
+          className="text-sm font-semibold text-slate-300 hover:text-white mb-6 transition duration-150"
           disabled={loading}
         >
           Resend Code
@@ -137,8 +130,8 @@ const VerifyOTP: React.FC = () => {
         {/* Verify Button */}
         <button
           onClick={handleVerify}
-          disabled={loading || !allDigitsEntered}
-          className="w-full py-3 px-4 rounded-xl font-bold text-white transition duration-200 ease-in-out bg-lime-500 hover:bg-lime-600 disabled:bg-lime-300 disabled:cursor-not-allowed text-lg shadow-md hover:shadow-lg"
+          disabled={loading || otp.some((d) => !d)}
+          className="w-full py-3 rounded-xl font-bold text-white bg-lime-500 hover:bg-lime-700 disabled:bg-gray-400 disabled:text-slate-800 transition"
         >
           {loading ? "Verifying..." : "Verify Code"}
         </button>
