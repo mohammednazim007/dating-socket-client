@@ -5,6 +5,7 @@ import {
   useSendFriendRequestMutation,
   useAcceptFriendRequestMutation,
   useDeleteFriendRequestMutation,
+  useCancelFriendRequestMeMutation,
 } from "@/app/redux/features/friends/friendApi";
 import toast from "react-hot-toast";
 import { playSound } from "@/app/utility/playSound";
@@ -24,6 +25,8 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
     useDeleteFriendRequestMutation();
   const [acceptRequest, { isLoading: isAccepting }] =
     useAcceptFriendRequestMutation();
+  const [cancelFriendRequestByMe, { isLoading: isCanceling }] =
+    useCancelFriendRequestMeMutation();
 
   const user = currentUser?.user;
   if (!user) return null;
@@ -80,11 +83,25 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
     }
   };
 
+  // ** Cancel Friend Request by Me
+  const handleCancelRequestByMe = async (friendId: string) => {
+    try {
+      await cancelFriendRequestByMe(friendId).unwrap();
+
+      await refetch();
+      playSound("cancel");
+      toast.success("Request cancelled 🚫");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "❌ Failed to cancel request");
+    }
+  };
+
   // ---- CONDITIONAL BUTTON RENDERING ----
+  //** Cancel request by me
   if (isRequestSent)
     return (
       <button
-        onClick={() => handleRemoveFriend(friend?._id)}
+        onClick={() => handleCancelRequestByMe(friend?._id)}
         disabled={isRemoving}
         className="bg-gray-300 text-gray-800 hover:bg-gray-400 transition text-xs px-3 py-1 rounded-sm"
       >

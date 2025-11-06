@@ -62,6 +62,15 @@ export const friendApi = createApi({
       }),
       invalidatesTags: ["Friends", "Auth", "User"],
     }),
+
+    // ✅ 4. Cancel friend request by me
+    cancelFriendRequestMe: builder.mutation({
+      query: (friendId: string) => ({
+        url: `/friend/cancel-request-by-me/${friendId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Friends", "Auth", "User"],
+    }),
   }),
 });
 
@@ -71,4 +80,5 @@ export const {
   useSendFriendRequestMutation,
   useAcceptFriendRequestMutation,
   useDeleteFriendRequestMutation,
+  useCancelFriendRequestMeMutation,
 } = friendApi;
