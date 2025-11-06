@@ -24,7 +24,6 @@ const NonFriendList = ({ searchTerm }: { searchTerm: string }) => {
     return (
       <div className="p-4 text-center text-gray-500">No friends found.</div>
     );
-  console.log("filteredFriends", filteredFriends);
 
   return (
     <div className="flex flex-col divide-y divide-slate-700">

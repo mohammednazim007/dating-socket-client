@@ -69,6 +69,8 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
   const handleRemoveFriend = async (receiverId: string) => {
     try {
       await deleteFriendRequest(receiverId).unwrap();
+      console.log("userId", user._id);
+      console.log("friendId", friend._id, receiverId);
 
       await refetch();
       playSound("cancel");
@@ -82,7 +84,7 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
   if (isRequestSent)
     return (
       <button
-        onClick={() => handleRemoveFriend(friend._id)}
+        onClick={() => handleRemoveFriend(friend?._id)}
         disabled={isRemoving}
         className="bg-gray-300 text-gray-800 hover:bg-gray-400 transition text-xs px-3 py-1 rounded-sm"
       >
@@ -90,6 +92,7 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
       </button>
     );
 
+  // * Received Friend Request
   if (isRequestReceived)
     return (
       <div className="flex gap-2">
