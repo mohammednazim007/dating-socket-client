@@ -1,6 +1,8 @@
 // src/app/redux/features/auth/authApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { User } from "@/app/types/auth";
+import { baseQueryWithReauth } from "../../base-query/baseQueryWithReauth";
+import { SignInFormData, SignUpFormData } from "@/app/lib/schemas/authSchemas";
 
 interface CurrentUser {
   user: User;
@@ -8,10 +10,7 @@ interface CurrentUser {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000/api",
-    credentials: "include",
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["Auth", "User"],
   endpoints: (builder) => ({
     //** Get current user */
@@ -30,10 +29,20 @@ export const authApi = createApi({
       invalidatesTags: ["Auth", "User"],
     }),
 
+    //** Register user */
+    registerUser: builder.mutation<any, any>({
+      query: (formData) => ({
+        url: "/user/register",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Auth", "User"],
+    }),
+
     //** Login user */
-    login: builder.mutation<CurrentUser, { email: string; password: string }>({
+    login: builder.mutation<any, SignInFormData>({
       query: (body) => ({
-        url: "/auth/login",
+        url: "/user/login",
         method: "POST",
         body,
       }),
@@ -43,8 +52,8 @@ export const authApi = createApi({
     //** Logout user */
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: "/auth/logout",
-        method: "POST",
+        url: "/user/logout",
+        method: "GET",
       }),
       invalidatesTags: ["Auth", "User"],
     }),
@@ -53,6 +62,7 @@ export const authApi = createApi({
 
 export const {
   useCurrentUserQuery,
+  useRegisterUserMutation,
   useLoginMutation,
   useLogoutMutation,
   useUpdateProfileMutation,

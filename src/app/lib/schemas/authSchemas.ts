@@ -12,6 +12,7 @@ export const signInSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
+  rememberMe: z.boolean().optional(),
 });
 
 export const signUpSchema = z

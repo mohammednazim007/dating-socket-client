@@ -38,25 +38,3 @@ export function debounce<T extends (...args: any[]) => void>(
 
   return debounced;
 }
-
-/*
-// --- Example Usage ---
-
-// Define a function to be debounced
-const logSearch = (query: string) => {
-  console.log('API call initiated for:', query);
-};
-
-// Create a debounced version with a 500ms delay
-const debouncedSearch = debounce(logSearch, 500);
-
-// Example of rapid calls (e.g., key presses):
-debouncedSearch('a');
-debouncedSearch('ap');
-debouncedSearch('app'); // This call will reset the timer
-
-// If no more calls happen for 500ms, 'API call initiated for: app' will run.
-
-// If you need to stop a pending call:
-// debouncedSearch.cancel(); 
-*/

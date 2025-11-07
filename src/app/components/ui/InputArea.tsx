@@ -1,14 +1,12 @@
 "use client";
 import { motion } from "motion/react";
-import { FiSend, FiImage, FiSmile, FiX, FiEdit3 } from "react-icons/fi";
+import { FiSend, FiImage, FiSmile, FiX } from "react-icons/fi";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useEmojiPicker } from "@/app/hooks/useEmojiPicker";
 import { useAppSelector, useAppDispatch } from "@/app/hooks/hooks";
-import api from "@/app/lib/axios";
 import { useState } from "react";
 import { getSocket } from "@/app/socket-io/socket-io";
-import { RootState } from "@/app/redux/store";
 import { sendMessage } from "@/app/utility/sendMessage";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
 import Image from "next/image";

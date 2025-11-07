@@ -7,13 +7,14 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import api from "@/app/lib/axios";
 import { signUpSchema, SignUpFormData } from "@/app/lib/schemas/authSchemas";
+import { useRegisterUserMutation } from "@/app/redux/features/authApi/authApi";
+import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
 
 const SignUpPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   const router = useRouter();
 
@@ -27,16 +28,13 @@ const SignUpPage = () => {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    setIsLoading(true);
     try {
-      const response = await api.post("/user/register", {
-        name: data.name,
-        email: data.email,
-        password: data.password,
+      await registerUser({
+        ...data,
         avatar: "",
       });
 
-      if (response.status === 201) router.push("/auth/signin");
+      router.push("/auth/signin");
     } catch (err: any) {
       const fields = err.response?.data?.fields;
       if (fields?.length) {
@@ -48,11 +46,8 @@ const SignUpPage = () => {
           message: err.response?.data?.message || "Something went wrong",
         });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4 py-8">
       <motion.div
@@ -226,7 +221,11 @@ const SignUpPage = () => {
             disabled={isLoading}
             className="w-full py-2 px-4 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Creating account..." : "Create account"}
+            {isLoading ? (
+              <ButtonIndicator width={10} height={10} />
+            ) : (
+              "Create account"
+            )}
           </button>
         </form>
 

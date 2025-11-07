@@ -1,13 +1,15 @@
 "use client";
 import { useAppDispatch } from "@/app/hooks/hooks";
-import api from "@/app/lib/axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
 import { motion } from "motion/react";
 import { debounce } from "@/app/utility/debounce";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import ButtonIndicator from "../buttonIndicator/ButtonIndicator";
+import { useLogoutMutation } from "@/app/redux/features/authApi/authApi";
 
 const SignOutButton = () => {
+  const [logout, { isLoading }] = useLogoutMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,11 +18,8 @@ const SignOutButton = () => {
   // ** sign out handler
   const signOutHandler = useCallback(async () => {
     try {
-      const signOut = await api.get("/user/logout");
-
-      if (signOut.status === 200) {
-        router.push(redirect);
-      }
+      await logout();
+      router.push(redirect);
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -39,10 +38,19 @@ const SignOutButton = () => {
     <motion.button
       onClick={debouncedSignOut}
       type="button"
-      className="flex text-sm items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-semibold rounded-lg shadow-sm transition-colors duration-300"
+      disabled={isLoading}
+      className={`flex text-sm items-center gap-2 px-4 py-2 bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-semibold rounded-lg shadow-sm transition-colors duration-300 ${
+        isLoading ? "cursor-not-allowed bg-gray-500" : ""
+      }`}
     >
-      <IoMdLogOut className="w-5 h-5" />
-      <span>Sign Out</span>
+      {isLoading ? (
+        <ButtonIndicator />
+      ) : (
+        <>
+          <IoMdLogOut className="w-5 h-5" />
+          <span>Sign Out</span>
+        </>
+      )}
     </motion.button>
   );
 };

@@ -40,8 +40,6 @@ const SetNewPassword: React.FC = () => {
 
   // Submission handler (only called if validation succeeds)
   const onSubmit: SubmitHandler<PasswordFields> = (data) => {
-    // isSubmitting state handles the loading status
-
     // **Simulated API Call to update password**
     return new Promise((resolve) => {
       setTimeout(() => {

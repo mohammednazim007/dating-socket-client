@@ -15,7 +15,7 @@ const ButtonIndicator: React.FC<ButtonIndicatorProps> = ({
   text,
 }) => {
   return (
-    <div className="flex items-center gap-2 text-xs px-2 py-1 ">
+    <div className="flex items-center gap-2 text-xs px-2 py-1 justify-center">
       {text && (
         <span className="text-sm font-medium text-slate-200">{text}</span>
       )}

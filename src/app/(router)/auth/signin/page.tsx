@@ -7,14 +7,14 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import api from "@/app/lib/axios";
 import { signInSchema, SignInFormData } from "@/app/lib/schemas/authSchemas";
+import { useLoginMutation } from "@/app/redux/features/authApi/authApi";
+import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
 
 const SignInPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [login, { isLoading }] = useLoginMutation();
   const router = useRouter();
 
   const {
@@ -38,30 +38,25 @@ const SignInPage = () => {
 
   // ✅ Handle Sign-in
   const onSubmit = async (data: SignInFormData) => {
-    setIsLoading(true);
     try {
-      const response = await api.post("/user/login", {
+      await login({
+        email: data.email,
+        password: data.password,
+        rememberMe,
+      }).unwrap();
+      console.log({
         email: data.email,
         password: data.password,
         rememberMe,
       });
 
-      if (response.status === 200) {
-        // ✅ If rememberMe checked, store email only
-        if (rememberMe) {
-          localStorage.setItem("rememberedEmail", data.email);
-        } else {
-          localStorage.removeItem("rememberedEmail");
-        }
+      // Save email if rememberMe
+      if (rememberMe) localStorage.setItem("rememberedEmail", data.email);
+      else localStorage.removeItem("rememberedEmail");
 
-        router.push("/");
-      }
+      router.push("/"); // redirect after login
     } catch (err: any) {
-      setError("root", {
-        message: err.response?.data?.message || "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
+      setError("root", { message: err.data?.message || "Login failed" });
     }
   };
 
@@ -189,7 +184,7 @@ const SignInPage = () => {
             disabled={isLoading}
             className="w-full py-2 px-4 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? <ButtonIndicator width={10} height={10} /> : "Sign in"}
           </button>
         </form>
       </motion.div>

@@ -21,7 +21,6 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import api from "@/app/lib/axios";
 import { useAppDispatch } from "@/app/hooks/hooks";
 import { profileSchema } from "./schema";
 import SignOutButton from "@/app/shared/signOut/Sign-out";
@@ -35,7 +34,7 @@ import ButtonIndicator from "../buttonIndicator/ButtonIndicator";
 import { IProfileForm } from "@/app/types/auth";
 
 const Profile = () => {
-  const { data: currentUser, refetch, isLoading } = useCurrentUserQuery();
+  const { data: currentUser, isLoading } = useCurrentUserQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
   const dispatch = useAppDispatch();
@@ -94,7 +93,7 @@ const Profile = () => {
           formData.append("image", values.image);
         }
 
-        const response = await updateProfile(formData).unwrap();
+        await updateProfile(formData).unwrap();
 
         toast.success("Profile updated successfully!");
         resetForm();
@@ -121,8 +120,8 @@ const Profile = () => {
   // ⏱️ Early return for loading state
   if (isLoading || !currentUser) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <ButtonIndicator width={100} height={40} text="Loading xx..." />
+      <div className="flex justify-center items-center min-h-screen">
+        <ButtonIndicator width={40} height={40} />
       </div>
     );
   }
@@ -303,6 +302,7 @@ const Profile = () => {
 
                   {/* Buttons */}
                   <div className="flex justify-end gap-4 pt-6">
+                    {/* Sign Out Button */}
                     <SignOutButton />
                     <button
                       type="submit"
