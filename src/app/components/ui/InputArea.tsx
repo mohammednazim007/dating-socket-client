@@ -11,6 +11,7 @@ import { getSocket } from "@/app/socket-io/socket-io";
 import { RootState } from "@/app/redux/store";
 import { sendMessage } from "@/app/utility/sendMessage";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
+import Image from "next/image";
 
 const InputArea = () => {
   const [message, setMessage] = useState("");
@@ -41,8 +42,8 @@ const InputArea = () => {
 
     dispatch(
       sendMessage({
-        sender_id: user?._id,
-        receiver_id: activeUser._id,
+        user_id: user?._id,
+        friend_id: activeUser._id,
         text: message,
         media: image || undefined,
       })
@@ -87,7 +88,9 @@ const InputArea = () => {
       {image && (
         <div className="absolute -top-16 left-2 w-fit max-w-xs inline-flex items-center gap-3 px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 shadow-lg">
           <div className="relative">
-            <img
+            <Image
+              width={120}
+              height={120}
               src={URL.createObjectURL(image)}
               alt="Preview"
               className="h-12 w-12 object-cover rounded-lg border border-slate-600"
@@ -130,15 +133,6 @@ const InputArea = () => {
           />
         </label>
 
-        {/* Input Box */}
-        {/* <input
-          type="text"
-          placeholder="Type a message..."
-          value={message}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="flex-1 px-4 py-2 rounded-lg bg-slate-900 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-        /> */}
         <textarea
           rows={1}
           placeholder="Type a message..."

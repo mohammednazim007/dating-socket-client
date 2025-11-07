@@ -9,6 +9,7 @@ import React, { useEffect, useRef } from "react";
 import DEFAULT_AVATAR from "@/app/assets/profile.png";
 import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
+import TextAnimation from "@/app/shared/TextAnimation/TextAnimation";
 
 const MessageArea = () => {
   const { data } = useCurrentUserQuery();
@@ -40,8 +41,9 @@ const MessageArea = () => {
           <NoChatSelected />
         ) : (
           chat.map((msg, i) => {
-            const isSender = msg.friend_id === user?._id;
-            const isActiveUser = activeUser && activeUser?._id === msg?.user_id;
+            const isSender = msg.user_id === user?._id;
+            const isActiveUser =
+              activeUser && activeUser?._id === msg?.friend_id;
 
             return (
               <div
@@ -68,11 +70,19 @@ const MessageArea = () => {
                   <div
                     className={`p-3 rounded-lg text-balance ${
                       isSender
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#A7AAE1] text-white"
                         : "bg-slate-700 text-gray-100"
                     } max-w-[80%] sm:max-w-[65%] lg:max-w-[50%]`}
                   >
-                    <p className="text-sm break-all">{msg.text}</p>
+                    <p className="text-sm break-all">
+                      <TextAnimation
+                        text={
+                          "Hello there! This text will appear word by word like GPT."
+                        }
+                        delay={400}
+                      />
+                    </p>
+                    {/* <p className="text-sm break-all">{msg.text}</p> */}
                   </div>
                 )}
 
