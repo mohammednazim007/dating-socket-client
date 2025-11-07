@@ -9,7 +9,6 @@ import React, { useEffect, useRef } from "react";
 import DEFAULT_AVATAR from "@/app/assets/profile.png";
 import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
-import TextAnimation from "@/app/shared/TextAnimation/TextAnimation";
 
 const MessageArea = () => {
   const { data } = useCurrentUserQuery();
@@ -74,15 +73,7 @@ const MessageArea = () => {
                         : "bg-slate-700 text-gray-100"
                     } max-w-[80%] sm:max-w-[65%] lg:max-w-[50%]`}
                   >
-                    <p className="text-sm break-all">
-                      <TextAnimation
-                        text={
-                          "Hello there! This text will appear word by word like GPT."
-                        }
-                        delay={400}
-                      />
-                    </p>
-                    {/* <p className="text-sm break-all">{msg.text}</p> */}
+                    <p className="text-sm break-all">{msg.text}</p>
                   </div>
                 )}
 
