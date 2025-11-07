@@ -1,3 +1,5 @@
+import { KeyboardEvent, RefObject } from "react";
+
 export interface User {
   _id: string;
   name: string;
@@ -44,4 +46,22 @@ export interface IProfileForm {
   newPassword: string;
   confirmPassword: string;
   image: File | null;
+}
+
+export interface SendOtpResponse {
+  success: boolean;
+  message: string;
+  email: string;
+}
+export interface IOtpVerify {
+  email: string;
+  otpCode: string;
+}
+export interface OtpInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  inputRef: RefObject<HTMLInputElement | null>;
+  isFocused: boolean;
 }

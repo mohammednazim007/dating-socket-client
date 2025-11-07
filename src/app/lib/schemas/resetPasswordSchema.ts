@@ -4,8 +4,11 @@ import * as yup from "yup"; // Import Yup
 export const ResetSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Must be a valid email address")
-    .required("Email address is required"),
+    .required("Email address is required")
+    .matches(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // simple email regex
+      "Must be a valid email address"
+    ),
 });
 
 // Define the validation schema for new and confirmation passwords

@@ -1,8 +1,8 @@
 // src/app/redux/features/auth/authApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { User } from "@/app/types/auth";
+import { IOtpVerify, SendOtpResponse, User } from "@/app/types/auth";
 import { baseQueryWithReauth } from "../../base-query/baseQueryWithReauth";
-import { SignInFormData, SignUpFormData } from "@/app/lib/schemas/authSchemas";
+import { SignInFormData } from "@/app/lib/schemas/authSchemas";
 
 interface CurrentUser {
   user: User;
@@ -57,6 +57,29 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth", "User"],
     }),
+
+    //** Send OTP for password reset */
+    sendOtp: builder.mutation<SendOtpResponse, { email: string }>({
+      query: (body) => ({
+        url: "/auth/send-otp",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    // ** Verify OTP for password reset */
+    verifyOtp: builder.mutation<
+      SendOtpResponse,
+      { email: string; otpCode: string }
+    >({
+      query: (body) => ({
+        url: "/auth/verify-otp",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 
@@ -66,5 +89,7 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useUpdateProfileMutation,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
 } = authApi;
 // useRefreshUserQuery

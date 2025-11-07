@@ -10,6 +10,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { signInSchema, SignInFormData } from "@/app/lib/schemas/authSchemas";
 import { useLoginMutation } from "@/app/redux/features/authApi/authApi";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
+import storageEmailLocalStorage from "@/app/utility/storeEmail";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,15 +45,10 @@ const SignInPage = () => {
         password: data.password,
         rememberMe,
       }).unwrap();
-      console.log({
-        email: data.email,
-        password: data.password,
-        rememberMe,
-      });
 
       // Save email if rememberMe
-      if (rememberMe) localStorage.setItem("rememberedEmail", data.email);
-      else localStorage.removeItem("rememberedEmail");
+      if (rememberMe) storageEmailLocalStorage(data.email, "add");
+      else storageEmailLocalStorage(data.email, "remove");
 
       router.push("/"); // redirect after login
     } catch (err: any) {
