@@ -1,5 +1,4 @@
 import { z } from "zod";
-// Regex patterns
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
 
@@ -60,19 +59,6 @@ export const profileSchema = z
     confirmPassword: z.string().optional(),
     image: z.instanceof(File).optional(),
   })
-  .refine(
-    (data) => {
-      // If a new password is entered, the current password is required
-      if (data.newPassword && !data.currentPassword) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message: "Current password is required to set a new one.",
-      path: ["currentPassword"],
-    }
-  )
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "New passwords do not match.",
     path: ["confirmPassword"],

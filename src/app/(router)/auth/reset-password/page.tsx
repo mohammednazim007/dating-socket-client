@@ -1,4 +1,4 @@
-import ResetPassword from "@/app/components/ui/ResetPassword";
+import ResetPassword from "@/app/components/ui/SendOtp";
 import React from "react";
 
 const page = () => {

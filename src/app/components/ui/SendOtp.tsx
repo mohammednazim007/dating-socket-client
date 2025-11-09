@@ -1,19 +1,19 @@
 "use client";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ResetSchema } from "@/app/lib/schemas/resetPasswordSchema";
 import storageEmailLocalStorage from "@/app/utility/storeEmail";
 import { useSendOtpMutation } from "@/app/redux/features/authApi/authApi";
 import { useRouter } from "next/navigation";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ResetSchema } from "@/app/lib/schemas/resetPasswordSchema";
 
 // Define the shape of the form data
 type ResetFields = {
   email: string;
 };
 
-const ResetPassword: React.FC = () => {
+const SendOtpPassword: React.FC = () => {
   const [sendOtp, { isLoading }] = useSendOtpMutation();
   const [rootError, setRootError] = useState<string | null>(null);
   const router = useRouter();
@@ -23,7 +23,7 @@ const ResetPassword: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<ResetFields>({
-    resolver: yupResolver(ResetSchema) as any,
+    resolver: zodResolver(ResetSchema),
     mode: "onSubmit",
   });
 
@@ -111,4 +111,4 @@ const ResetPassword: React.FC = () => {
   );
 };
 
-export default ResetPassword;
+export default SendOtpPassword;

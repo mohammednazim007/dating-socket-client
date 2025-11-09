@@ -80,7 +80,7 @@ const VerifyOTP: FC = () => {
       if (response.success) {
         toast.success("OTP verified successfully!");
         storageEmailLocalStorage(email, "remove");
-        router.push("/auth/set-new-password");
+        router.push("/auth/change-password");
       } else {
         toast.error(response.message || "OTP verification failed.");
       }

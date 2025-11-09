@@ -1,6 +1,5 @@
-// src/app/redux/features/auth/authApi.ts
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IOtpVerify, SendOtpResponse, User } from "@/app/types/auth";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { IResponse, User } from "@/app/types/auth";
 import { baseQueryWithReauth } from "../../base-query/baseQueryWithReauth";
 import { SignInFormData } from "@/app/lib/schemas/authSchemas";
 
@@ -59,7 +58,7 @@ export const authApi = createApi({
     }),
 
     //** Send OTP for password reset */
-    sendOtp: builder.mutation<SendOtpResponse, { email: string }>({
+    sendOtp: builder.mutation<IResponse, { email: string }>({
       query: (body) => ({
         url: "/auth/send-otp",
         method: "POST",
@@ -69,13 +68,23 @@ export const authApi = createApi({
     }),
 
     // ** Verify OTP for password reset */
-    verifyOtp: builder.mutation<
-      SendOtpResponse,
-      { email: string; otpCode: string }
-    >({
+    verifyOtp: builder.mutation<IResponse, { email: string; otpCode: string }>({
       query: (body) => ({
         url: "/auth/verify-otp",
         method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    // ** Set new password */
+    setNewPassword: builder.mutation<
+      IResponse,
+      { email: string; newPassword: string }
+    >({
+      query: (body) => ({
+        url: "/auth/change-password",
+        method: "PUT",
         body,
       }),
       invalidatesTags: ["Auth"],
@@ -91,5 +100,6 @@ export const {
   useUpdateProfileMutation,
   useSendOtpMutation,
   useVerifyOtpMutation,
+  useSetNewPasswordMutation,
 } = authApi;
 // useRefreshUserQuery

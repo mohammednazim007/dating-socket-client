@@ -48,7 +48,7 @@ export interface IProfileForm {
   image: File | null;
 }
 
-export interface SendOtpResponse {
+export interface IResponse {
   success: boolean;
   message: string;
   email: string;
@@ -65,3 +65,8 @@ export interface OtpInputProps {
   inputRef: RefObject<HTMLInputElement | null>;
   isFocused: boolean;
 }
+//** */ Define the shape of the form data
+export type PasswordFields = {
+  newPassword: string;
+  confirmPassword: string;
+};
