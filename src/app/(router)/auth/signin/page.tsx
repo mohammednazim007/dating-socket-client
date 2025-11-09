@@ -40,17 +40,19 @@ const SignInPage = () => {
   // ✅ Handle Sign-in
   const onSubmit = async (data: SignInFormData) => {
     try {
-      await login({
+      const response = await login({
         email: data.email,
         password: data.password,
         rememberMe,
       }).unwrap();
 
       // Save email if rememberMe
-      if (rememberMe) storageEmailLocalStorage(data.email, "add");
-      else storageEmailLocalStorage(data.email, "remove");
+      if (response?.success === true) {
+        if (rememberMe) storageEmailLocalStorage(data.email, "add");
+        else storageEmailLocalStorage(data.email, "remove");
 
-      router.push("/"); // redirect after login
+        router.push("/");
+      }
     } catch (err: any) {
       setError("root", { message: err.data?.message || "Login failed" });
     }
