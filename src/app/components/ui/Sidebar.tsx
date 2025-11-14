@@ -29,6 +29,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
   const dispatch = useAppDispatch();
   const route = useRouter();
+  console.log("currentUser", currentUser);
 
   // ✅ Debounce searchTerm updates (searchTerm is only for filtering)
   const debouncedSearch = useMemo(

@@ -46,13 +46,11 @@ const SignInPage = () => {
         rememberMe,
       }).unwrap();
 
-      // Save email if rememberMe
-      if (response?.success === true) {
-        if (rememberMe) storageEmailLocalStorage(data.email, "add");
-        else storageEmailLocalStorage(data.email, "remove");
+      if (response?.success === true) router.push("/");
 
-        router.push("/");
-      }
+      // Save email if rememberMe
+      if (rememberMe) storageEmailLocalStorage(data.email, "add");
+      else storageEmailLocalStorage(data.email, "remove");
     } catch (err: any) {
       setError("root", { message: err.data?.message || "Login failed" });
     }

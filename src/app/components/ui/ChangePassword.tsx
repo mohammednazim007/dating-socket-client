@@ -9,10 +9,10 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import storageEmailLocalStorage from "@/app/utility/storeEmail";
 
 const ChangePassword: React.FC = () => {
   const [setNewPassword, { isLoading }] = useSetNewPasswordMutation();
-  const email = localStorage.getItem("resetEmail");
   const router = useRouter();
 
   // ** Visibility state
@@ -30,6 +30,7 @@ const ChangePassword: React.FC = () => {
 
   const onSubmit: SubmitHandler<PasswordFields> = async (data) => {
     try {
+      const email = localStorage.getItem("resetEmail");
       if (!email) {
         toast.error("Email not found. Please try again.");
         return;
@@ -43,6 +44,7 @@ const ChangePassword: React.FC = () => {
       if (response?.success) {
         toast.success("Password updated successfully.");
         router.push("/");
+        storageEmailLocalStorage(email, "remove");
       }
     } catch (error) {
       console.log("error", error);

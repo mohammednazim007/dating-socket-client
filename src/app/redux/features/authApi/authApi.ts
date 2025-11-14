@@ -102,4 +102,3 @@ export const {
   useVerifyOtpMutation,
   useSetNewPasswordMutation,
 } = authApi;
-// useRefreshUserQuery
