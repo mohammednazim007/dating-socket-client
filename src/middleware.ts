@@ -8,7 +8,7 @@ const publicPaths: string[] = [
   "/auth/signup",
   "/auth/reset-password",
   "/auth/verify-otp",
-  "/auth/set-new-password",
+  "/auth/change-password",
 ];
 
 function isPublicPath(path: string): boolean {

@@ -14,7 +14,7 @@ const FriendSidebarList = ({
 
   const handleFriendClick = useCallback(
     (friend: User) => {
-      setSelectedFriendId(friend._id);
+      setSelectedFriendId(friend?._id);
       onClick?.(friend);
     },
     [onClick]
@@ -23,7 +23,7 @@ const FriendSidebarList = ({
   return (
     <div className="flex flex-col">
       {friends?.map((friend) => {
-        const isOnline = onlineUsers.includes(friend._id);
+        const isOnline = onlineUsers.includes(friend?._id);
         const isSelected = friend._id === selectedFriendId;
 
         return (

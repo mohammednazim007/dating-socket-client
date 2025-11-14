@@ -10,10 +10,7 @@ interface ChatAreaProps {
 }
 
 const ChatArea = ({ onToggleSidebar }: ChatAreaProps) => {
-  const { activeUser, loading } = useAppSelector((state) => state.user);
-  console.log("activeUser", activeUser);
-
-  if (loading) return <div>Loading...</div>;
+  const { activeUser } = useAppSelector((state) => state.user);
 
   return (
     <div className="flex flex-col flex-1 min-h-0 bg-[#0f172a] text-slate-100">

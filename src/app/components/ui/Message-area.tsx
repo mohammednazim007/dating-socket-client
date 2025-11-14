@@ -8,30 +8,25 @@ import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import DEFAULT_AVATAR from "@/app/assets/profile.png";
 import NoChatSelected from "../../shared/NoChatSelected/NoChatSelected";
+import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
 
 const MessageArea = () => {
-  const dispatch = useAppDispatch();
+  const { data } = useCurrentUserQuery();
   const { activeUser, chat } = useAppSelector((state) => state.user);
-  const currentUser = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const user = data?.user;
 
   // ** Initialize socket connection
-  useSocket(currentUser?._id || "");
+  useSocket(user?._id || "");
   const messageEndRef = useRef<HTMLDivElement | null>(null);
-
-  // 🚀 USE THE CUSTOM HOOK HERE
-  const [isTyping] = useTypingIndicator(currentUser?._id, activeUser);
+  const [isTyping] = useTypingIndicator(user?._id, activeUser);
 
   // ** fetch the chat history
   useEffect(() => {
-    if (currentUser && activeUser) {
-      dispatch(
-        fetchChatHistory({
-          sender_id: currentUser._id,
-          receiver_id: activeUser._id,
-        })
-      );
+    if (activeUser?._id) {
+      dispatch(fetchChatHistory({ friend_id: activeUser?._id }));
     }
-  }, [currentUser, activeUser, dispatch]);
+  }, [activeUser?._id, dispatch, user?._id]);
 
   // ** Scroll message
   useEffect(() => {
@@ -39,16 +34,15 @@ const MessageArea = () => {
   }, [chat, isTyping]);
 
   return (
-    // Ensure the main container doesn't overflow
     <div className="flex flex-col flex-1 min-h-0 bg-slate-900 w-full overflow-hidden">
       <div className="flex-1 overflow-y-auto w-full py-4 space-y-3 min-h-0">
         {!chat || chat.length === 0 ? (
           <NoChatSelected />
         ) : (
           chat.map((msg, i) => {
-            const isSender = msg.sender_id === currentUser?._id;
+            const isSender = msg.user_id === user?._id;
             const isActiveUser =
-              activeUser && activeUser?._id === msg?.sender_id;
+              activeUser && activeUser?._id === msg?.friend_id;
 
             return (
               <div
@@ -75,7 +69,7 @@ const MessageArea = () => {
                   <div
                     className={`p-3 rounded-lg text-balance ${
                       isSender
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#A7AAE1] text-white"
                         : "bg-slate-700 text-gray-100"
                     } max-w-[80%] sm:max-w-[65%] lg:max-w-[50%]`}
                   >
@@ -106,7 +100,7 @@ const MessageArea = () => {
                     <Image
                       width={36}
                       height={36}
-                      src={currentUser?.avatar || DEFAULT_AVATAR.src}
+                      src={user?.avatar || DEFAULT_AVATAR.src}
                       alt="Sender avatar"
                       className="object-cover w-full h-full"
                     />

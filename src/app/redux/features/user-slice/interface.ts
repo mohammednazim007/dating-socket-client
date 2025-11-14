@@ -2,8 +2,8 @@ import { User } from "@/app/types/auth";
 
 export interface IChatMessage {
   _id?: string;
-  sender_id: string;
-  receiver_id: string;
+  friend_id?: string;
+  user_id?: string;
   text?: string;
   media?: string;
   createdAt?: string;

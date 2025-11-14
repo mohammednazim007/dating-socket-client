@@ -19,7 +19,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ onClose }: SidebarProps) => {
-  const [activeTab, setActiveTab] = useState<"chat" | "friends">("friends");
+  const [activeTab, setActiveTab] = useState<"chat" | "friends">("chat");
   const [inputValue, setInputValue] = useState(""); // ✅ back, but lightweight
   const [searchTerm, setSearchTerm] = useState(""); // ✅ used for filtering
 
@@ -29,6 +29,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
   const dispatch = useAppDispatch();
   const route = useRouter();
+  console.log("currentUser", currentUser);
 
   // ✅ Debounce searchTerm updates (searchTerm is only for filtering)
   const debouncedSearch = useMemo(
@@ -39,9 +40,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
     []
   );
 
-  useEffect(() => {
-    return () => debouncedSearch.cancel();
-  }, [debouncedSearch]);
+  useEffect(() => debouncedSearch.cancel(), [debouncedSearch]);
 
   // ✅** Handle friend to add active user
   const handleClick = (friend: any) => {

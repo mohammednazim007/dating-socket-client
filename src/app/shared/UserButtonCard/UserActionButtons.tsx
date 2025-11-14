@@ -97,7 +97,7 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
   };
 
   // ---- CONDITIONAL BUTTON RENDERING ----
-  //** Cancel request by me
+  //** Cancel friend request by me
   if (isRequestSent)
     return (
       <button
@@ -105,7 +105,11 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
         disabled={isRemoving}
         className="bg-gray-300 text-gray-800 hover:bg-gray-400 transition text-xs px-3 py-1 rounded-sm"
       >
-        {isRemoving ? <ButtonIndicator /> : "Cancel Request"}
+        {isRemoving ? (
+          <ButtonIndicator width={9} height={9} />
+        ) : (
+          "Cancel Request"
+        )}
       </button>
     );
 
@@ -116,16 +120,16 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
         <button
           onClick={() => handleAcceptRequest(friend._id)}
           disabled={isAccepting}
-          className="px-3 py-1 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition text-xs"
+          className="text-xs px-3 py-1 rounded-sm bg-blue-600 text-white hover:bg-blue-700 transition "
         >
-          {isAccepting ? <ButtonIndicator width={8} height={8} /> : "Confirm"}
+          {isAccepting ? <ButtonIndicator width={9} height={9} /> : "Confirm"}
         </button>
         <button
           onClick={() => handleRemoveFriend(friend._id)}
           disabled={isRemoving}
-          className="px-3 py-1 bg-gray-300 text-gray-800 rounded-sm hover:bg-gray-400 transition text-xs"
+          className="text-xs px-3 py-1 rounded-sm bg-gray-300 text-gray-800  hover:bg-gray-400 transition "
         >
-          {isRemoving ? <ButtonIndicator width={8} height={8} /> : "Cancel"}
+          {isRemoving ? <ButtonIndicator width={9} height={9} /> : "Cancel"}
         </button>
       </div>
     );

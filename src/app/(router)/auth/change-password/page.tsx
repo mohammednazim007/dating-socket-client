@@ -1,10 +1,10 @@
-import SetNewPassword from "@/app/components/ui/SetNewPassword";
+import ChangePassword from "@/app/components/ui/ChangePassword";
 import React from "react";
 
 const page = () => {
   return (
     <div>
-      <SetNewPassword />
+      <ChangePassword />
     </div>
   );
 };

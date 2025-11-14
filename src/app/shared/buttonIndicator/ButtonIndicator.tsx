@@ -10,19 +10,19 @@ interface ButtonIndicatorProps {
 const COLORS = ["#ECF4E8", "#6E8CFB", "#9ECFD4"];
 
 const ButtonIndicator: React.FC<ButtonIndicatorProps> = ({
-  width = 8,
-  height = 8,
+  width = 15,
+  height = 15,
   text,
 }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 text-xs px-2 py-1 justify-center">
       {text && (
         <span className="text-sm font-medium text-slate-200">{text}</span>
       )}
       {COLORS.map((color, i) => (
         <motion.span
           key={i}
-          className="rounded-full"
+          className="rounded-full inline-block"
           style={{
             width,
             height,
