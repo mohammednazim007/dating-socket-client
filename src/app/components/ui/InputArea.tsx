@@ -25,7 +25,7 @@ const InputArea = () => {
   const socket = getSocket();
 
   // Add selected emoji into the message input
-  const handleEmojiSelect = (emoji: any) =>
+  const handleEmojiSelect = (emoji: { native: string }) =>
     setMessage((prev) => prev + emoji.native);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

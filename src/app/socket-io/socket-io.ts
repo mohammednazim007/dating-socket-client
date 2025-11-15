@@ -1,31 +1,41 @@
-//** socket.io
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
-let socket: any = null;
+let socket: Socket | null = null;
 
-// ** connect Socket
-export const connectSocket = (user_id: string) => {
+/**
+ * Connects the socket for the given user.
+ * Returns the socket instance or null if user_id is missing.
+ */
+export const connectSocket = (user_id: string): Socket | null => {
   if (!user_id) {
     console.warn("⚠️ No user_id provided, socket not connected");
     return null;
   }
 
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
-    query: { user_id },
-    transports: ["websocket"],
-    autoConnect: true,
-  });
+  if (!socket) {
+    socket = io(process.env.NEXT_PUBLIC_SOCKET_BACKEND_URL as string, {
+      query: { user_id },
+      transports: ["websocket"],
+      autoConnect: true,
+    });
+  }
 
   return socket;
 };
 
-// ** Get Socket
-export const getSocket = () => socket;
-
-// ** Disconnect Socket
-export const disconnectSocket = () => {
-  if (socket) {
-    socket.disconnect();
-    socket = null;
+/**
+ * Returns the connected socket instance.
+ * Throws an error if socket is not initialized.
+ */
+export const getSocket = (): Socket => {
+  if (!socket) {
+    throw new Error("Socket not initialized. Call connectSocket first.");
   }
+  return socket;
+};
+
+/** Disconnects the socket and cleans up */
+export const disconnectSocket = () => {
+  socket?.disconnect();
+  socket = null;
 };

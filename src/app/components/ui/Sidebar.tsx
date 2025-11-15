@@ -14,6 +14,7 @@ import SidebarTabs from "@/app/shared/SidebarTabs/SidebarTabs";
 import { debounce } from "@/app/utility/debounce";
 import { useFilteredFriends } from "@/app/hooks/useFilteredFriends";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
+import { User } from "@/app/types/auth";
 interface SidebarProps {
   onClose?: () => void;
 }
@@ -29,7 +30,6 @@ const Sidebar = ({ onClose }: SidebarProps) => {
 
   const dispatch = useAppDispatch();
   const route = useRouter();
-  console.log("currentUser", currentUser);
 
   // ✅ Debounce searchTerm updates (searchTerm is only for filtering)
   const debouncedSearch = useMemo(
@@ -43,7 +43,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   useEffect(() => debouncedSearch.cancel(), [debouncedSearch]);
 
   // ✅** Handle friend to add active user
-  const handleClick = (friend: any) => {
+  const handleClick = (friend: User) => {
     dispatch(setActiveUser(friend));
 
     // Only close sidebar on mobile (width < 768px)

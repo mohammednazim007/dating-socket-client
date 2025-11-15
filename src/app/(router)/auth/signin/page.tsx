@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { signInSchema, SignInFormData } from "@/app/lib/schemas/authSchemas";
 import { useLoginMutation } from "@/app/redux/features/authApi/authApi";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
-import storageEmailLocalStorage from "@/app/utility/storeEmail";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,28 +17,28 @@ const SignInPage = () => {
   const [login, { isLoading }] = useLoginMutation();
   const router = useRouter();
 
+  const rememberedEmail =
+    typeof window !== "undefined"
+      ? localStorage.getItem("rememberedEmail")
+      : "";
+
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
     setError,
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
+    defaultValues: { email: rememberedEmail || "", password: "" },
   });
-
-  // ✅ Load remembered email on mount
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("rememberedEmail");
-    if (savedEmail) {
-      setValue("email", savedEmail);
-      setRememberMe(true);
-    }
-  }, [setValue]);
 
   // ✅ Handle Sign-in
   const onSubmit = async (data: SignInFormData) => {
     try {
+      // Save email before login
+      if (rememberMe) localStorage.setItem("rememberedEmail", data.email);
+      else localStorage.removeItem("rememberedEmail");
+
       const response = await login({
         email: data.email,
         password: data.password,
@@ -47,12 +46,11 @@ const SignInPage = () => {
       }).unwrap();
 
       if (response?.success === true) router.push("/");
-
-      // Save email if rememberMe
-      if (rememberMe) storageEmailLocalStorage(data.email, "add");
-      else storageEmailLocalStorage(data.email, "remove");
-    } catch (err: any) {
-      setError("root", { message: err.data?.message || "Login failed" });
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      setError("root", {
+        message: apiError.data?.message || "Login failed",
+      });
     }
   };
 

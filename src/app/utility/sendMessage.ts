@@ -21,9 +21,8 @@ export const sendMessage = createAsyncThunk<
     });
 
     return res.data.data as IChatMessage;
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to send message"
-    );
+  } catch (err: unknown) {
+    const apiError = err as { data?: { message?: string } };
+    return rejectWithValue(apiError.data?.message || "Failed to send message");
   }
 });

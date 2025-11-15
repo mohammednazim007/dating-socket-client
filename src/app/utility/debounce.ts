@@ -1,34 +1,18 @@
-/**
- * @param func The function to debounce.
- * @param delay The number of milliseconds to delay.
- * @returns A new, debounced function.
- */
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
+export function debounce<Args extends unknown[]>(
+  func: (...args: Args) => void,
   delay: number
-): T & { cancel: () => void } {
-  // Timeout handle to store the timer reference
+): ((...args: Args) => void) & { cancel: () => void } {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  const debounced = function (
-    this: ThisParameterType<T>,
-    ...args: Parameters<T>
-  ) {
-    // 1. Clear any existing timer to reset the debounce countdown
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
+  const debounced = (...args: Args) => {
+    if (timeoutId) clearTimeout(timeoutId);
 
-    // 2. Set a new timer
     timeoutId = setTimeout(() => {
-      func.apply(this, args);
+      func(...args);
       timeoutId = null;
     }, delay);
-  } as T & { cancel: () => void };
+  };
 
-  /**
-   * Immediately cancels any pending execution of the debounced function.
-   */
   debounced.cancel = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);

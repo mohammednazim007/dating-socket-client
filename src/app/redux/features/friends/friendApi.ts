@@ -1,4 +1,5 @@
 // src/app/redux/features/friends/friendApi.ts
+import { IResponse } from "@/app/types/auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const friendApi = createApi({
@@ -11,13 +12,13 @@ export const friendApi = createApi({
 
   endpoints: (builder) => ({
     // ✅ 1. Get all friends + pending requests
-    getFriends: builder.query<any, void>({
+    getFriends: builder.query<IResponse, void>({
       query: () => `/friend/non-friends`,
       providesTags: ["Friends"],
     }),
 
     // 2. Get the accepted friends list
-    getAcceptedFriends: builder.query<any, void>({
+    getAcceptedFriends: builder.query<IResponse, void>({
       query: () => `/friend/accepted-friends`,
       providesTags: ["Friends"],
     }),
