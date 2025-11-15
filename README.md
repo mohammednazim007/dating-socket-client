@@ -1,4 +1,10 @@
-# Next.js Real‑Time Chat (Messenger‑style)
+```markdown
+![Signin](public/screenshots/signin.png)
+![Chat](public/screenshots/chat.png)
+![Notifications](public/screenshots/notifications.png)
+```
+
+# Real‑Time Chat web app (Messenger‑style)
 
 A modern, production‑ready chat application built with Next.js 15 and React 19. It delivers real‑time messaging with presence, notifications, and a responsive Messenger‑like UI. Authentication, session refresh, and protected routing are included. The app consumes a backend API and connects to a Socket.IO server for live updates.
 
@@ -10,6 +16,8 @@ This project provides a full chat experience similar to Facebook Messenger:
 - Real‑time one‑to‑one messaging with typing indicators and online status
 - Notification center with unread counts and mark‑as‑read actions
 - Friend discovery and requests (send, accept, reject, cancel)
+- Friend list filter (online, all)
+- Message history loading and pagination
 - Responsive layout optimized for desktop and mobile
 - Clean state management with Redux Toolkit + RTK Query
 - API‑driven data access with automatic token refresh
@@ -80,15 +88,8 @@ pnpm dev
 pnpm run build
 
 # Start production server
-pnpm dev
+pnpm start
 ```
-
-## Deployment
-
-- Vercel is recommended for Next.js: import the repo and configure environment variables.
-- Set `NEXT_PUBLIC_BACKEND_URL` and `NEXT_PUBLIC_SOCKET_URL` in your hosting provider.
-- Use the production build (`pnpm run build`) and start (`pnpm dev`) for self‑hosting.
-- Allow cookies (credentials) on your backend to support refresh flows.
 
 ## API & Sockets
 
@@ -99,12 +100,6 @@ pnpm dev
 ## Screenshots
 
 Add screenshots under `public/screenshots/` and reference them here:
-
-```markdown
-![Signin](public/screenshots/signin.png)
-![Chat](public/screenshots/chat.png)
-![Notifications](public/screenshots/notifications.png)
-```
 
 ## Notes
 
