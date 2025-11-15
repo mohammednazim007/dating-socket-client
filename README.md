@@ -1,8 +1,8 @@
 <img width="1392" height="633" alt="messenger" src="https://github.com/user-attachments/assets/0c41b179-ab0d-460e-bbe6-a691454242c9" />
 
-## Real‑Time Chat App (Messenger)
+## Real‑Time Dating App
 
-A modern, production‑ready chat application built with Next.js 15 and React 19. It delivers real‑time messaging with presence, notifications, and a responsive Messenger‑like UI. Authentication, session refresh, and protected routing are included. The app consumes a backend API and connects to a Socket.IO server for live updates.
+A modern, production‑ready chat application built with Next.js 15 and React 19. It delivers real-time messaging with presence, notifications, and a responsive, Messenger-like UI. Authentication, session refresh, and protected routing are included. The app consumes a backend API and connects to a Socket.IO server for live updates.
 
 ## Overview
 
