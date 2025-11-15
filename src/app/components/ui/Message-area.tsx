@@ -39,7 +39,7 @@ const MessageArea = () => {
         {!chat || chat.length === 0 ? (
           <NoChatSelected />
         ) : (
-          chat.map((msg, i) => {
+          chat?.map((msg, i) => {
             const isSender = msg.user_id === user?._id;
             const isActiveUser =
               activeUser && activeUser?._id === msg?.friend_id;
@@ -69,11 +69,11 @@ const MessageArea = () => {
                   <div
                     className={`p-3 rounded-lg text-balance ${
                       isSender
-                        ? "bg-[#A7AAE1] text-white"
+                        ? "bg-[#435663] text-white"
                         : "bg-slate-700 text-gray-100"
                     } max-w-[80%] sm:max-w-[65%] lg:max-w-[50%]`}
                   >
-                    <p className="text-sm break-all">{msg.text}</p>
+                    <p className="text-[15px] break-all">{msg.text}</p>
                   </div>
                 )}
 
