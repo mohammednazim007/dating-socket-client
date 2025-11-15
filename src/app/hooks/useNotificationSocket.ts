@@ -1,7 +1,9 @@
-"use client";
-
 import { useEffect, useState, useCallback } from "react";
-import { connectSocket, disconnectSocket } from "@/app/socket-io/socket-io";
+import {
+  connectSocket,
+  disconnectSocket,
+  getSocket,
+} from "@/app/socket-io/socket-io";
 import { INotification } from "../types/notificationType";
 import { useCurrentUserQuery } from "../redux/features/authApi/authApi";
 
@@ -9,7 +11,6 @@ export const useNotificationSocket = () => {
   const { data } = useCurrentUserQuery();
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  const [socket, setSocket] = useState<any>(null);
 
   const user = data?.user;
 
@@ -17,16 +18,14 @@ export const useNotificationSocket = () => {
   useEffect(() => {
     if (!user?._id) return;
 
-    const socketInstance = connectSocket(user?._id);
-    setSocket(socketInstance);
+    const socketInstance = connectSocket(user._id);
+    if (!socketInstance) return;
 
-    // ✅ Listen for all notifications
+    // Listen for all notifications
     socketInstance.on("all_notifications", (data: INotification[]) => {
       setNotifications(data);
-      // console.log("📬 All notifications:", data);
     });
 
-    // ✅ Cleanup on unmount
     return () => {
       socketInstance.off("all_notifications");
       disconnectSocket();
@@ -34,10 +33,9 @@ export const useNotificationSocket = () => {
     };
   }, [user?._id]);
 
-  // ----------------- FUNCTIONS -----------------
-  // unread count calculation
+  // Update unread count
   useEffect(() => {
-    const count = notifications?.reduce(
+    const count = notifications.reduce(
       (acc, notification) => acc + (notification.isRead ? 0 : 1),
       0
     );
@@ -45,21 +43,30 @@ export const useNotificationSocket = () => {
   }, [notifications]);
 
   // Mark single notification as read
-  const readSingleNotification = useCallback(
-    (id: string) => {
-      setNotifications((prev) =>
-        prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
-      );
-      socket?.emit("read_single_notification", { notificationId: id });
-    },
-    [socket]
-  );
+  const readSingleNotification = useCallback((id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
+    );
+
+    try {
+      const socket = getSocket();
+      socket.emit("read_single_notification", { notificationId: id });
+    } catch {
+      console.warn("Socket not initialized yet");
+    }
+  }, []);
 
   // Mark all notifications as read
   const markAllNotificationsRead = useCallback(() => {
-    // Notify backend
-    socket?.emit("read_all_notifications", { receiver_id: user?._id });
-  }, [socket, user?._id]);
+    if (!user?._id) return;
+
+    try {
+      const socket = getSocket();
+      socket.emit("read_all_notifications", { receiver_id: user._id });
+    } catch {
+      console.warn("Socket not initialized yet");
+    }
+  }, [user?._id]);
 
   return {
     notifications,

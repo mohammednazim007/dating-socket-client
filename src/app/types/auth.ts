@@ -33,6 +33,7 @@ export interface SignUpData {
   name: string;
   email: string;
   password: string;
+  avatar?: File | null | string;
 }
 
 export interface AuthResponse {
@@ -51,7 +52,8 @@ export interface IProfileForm {
 export interface IResponse {
   success: boolean;
   message: string;
-  email: string;
+  email?: string;
+  users?: User[];
 }
 export interface IOtpVerify {
   email: string;

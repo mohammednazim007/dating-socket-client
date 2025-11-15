@@ -35,17 +35,12 @@ const SignUpPage = () => {
       });
 
       router.push("/auth/signin");
-    } catch (err: any) {
-      const fields = err.response?.data?.fields;
-      if (fields?.length) {
-        fields.forEach((f: { field: string; message: string }) =>
-          setError(f.field as keyof SignUpFormData, { message: f.message })
-        );
-      } else {
-        setError("root", {
-          message: err.response?.data?.message || "Something went wrong",
-        });
-      }
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+
+      setError("root", {
+        message: apiError.data?.message || "Something went wrong",
+      });
     }
   };
   return (

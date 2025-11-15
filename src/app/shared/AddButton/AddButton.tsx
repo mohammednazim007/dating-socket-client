@@ -1,6 +1,6 @@
 // src/app/shared/UserButtonCard/AddButton.jsx
 
-import { FaUserPlus, FaSpinner } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa";
 import ButtonIndicator from "../buttonIndicator/ButtonIndicator";
 
 interface AddButtonProps {

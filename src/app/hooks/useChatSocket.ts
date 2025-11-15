@@ -6,6 +6,7 @@ import {
   addNewMessage,
   setOnlineUsers,
 } from "@/app/redux/features/user-slice/message-user-slice";
+import { IChatMessage } from "../redux/features/user-slice/interface";
 
 export const useSocket = (userId: string) => {
   const dispatch = useAppDispatch();
@@ -19,7 +20,8 @@ export const useSocket = (userId: string) => {
     if (!socket) return;
 
     // Listen to events
-    const handleNewMessage = (msg: any) => dispatch(addNewMessage(msg));
+    const handleNewMessage = (msg: IChatMessage) =>
+      dispatch(addNewMessage(msg));
     const handleOnlineUsers = (users: string[]) =>
       dispatch(setOnlineUsers(users));
 

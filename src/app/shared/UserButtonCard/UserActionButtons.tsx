@@ -25,8 +25,7 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
     useDeleteFriendRequestMutation();
   const [acceptRequest, { isLoading: isAccepting }] =
     useAcceptFriendRequestMutation();
-  const [cancelFriendRequestByMe, { isLoading: isCanceling }] =
-    useCancelFriendRequestMeMutation();
+  const [cancelFriendRequestByMe] = useCancelFriendRequestMeMutation();
 
   const user = currentUser?.user;
   if (!user) return null;
@@ -47,9 +46,10 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
 
       await refetch();
       playSound("success");
-      toast.success("Friend request sent ✅");
-    } catch (err: any) {
-      toast.error(err?.data?.message || "❌ Failed to send request");
+      toast.success("Friend request sent ");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "Failed to send request");
     }
   };
 
@@ -63,8 +63,9 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
 
       playSound("success");
       toast.success("Friend request accepted 🎉");
-    } catch {
-      toast.error("❌ Failed to accept request");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "Failed to accept request");
     }
   };
 
@@ -72,14 +73,13 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
   const handleRemoveFriend = async (receiverId: string) => {
     try {
       await deleteFriendRequest(receiverId).unwrap();
-      console.log("userId", user._id);
-      console.log("friendId", friend._id, receiverId);
 
       await refetch();
       playSound("cancel");
-      toast.success("Request cancelled 🚫");
-    } catch (error: any) {
-      toast.error(error?.data?.message || "❌ Failed to cancel request");
+      toast.success("Request cancelled");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "Failed to cancel request");
     }
   };
 
@@ -91,8 +91,9 @@ const UserActionButtons = ({ friend }: UserActionProps) => {
       await refetch();
       playSound("cancel");
       toast.success("Request cancelled 🚫");
-    } catch (error: any) {
-      toast.error(error?.data?.message || "❌ Failed to cancel request");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "Failed to cancel request");
     }
   };
 

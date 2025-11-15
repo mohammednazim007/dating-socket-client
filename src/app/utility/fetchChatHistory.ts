@@ -10,9 +10,10 @@ export const fetchChatHistory = createAsyncThunk<
   try {
     const res = await api.get(`/message/get_message/${data.friend_id}`);
     return res?.data?.data as IChatMessage[];
-  } catch (error: any) {
+  } catch (err: unknown) {
+    const apiError = err as { data?: { message?: string } };
     return rejectWithValue(
-      error.response?.data?.message || "Failed to load chat history"
+      apiError.data?.message || "Failed to load chat history"
     );
   }
 });

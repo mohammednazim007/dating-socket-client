@@ -14,7 +14,6 @@ import {
   useSendOtpMutation,
   useVerifyOtpMutation,
 } from "@/app/redux/features/authApi/authApi";
-import storageEmailLocalStorage from "@/app/utility/storeEmail";
 import { useRouter } from "next/navigation";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
 import OtpInput from "@/app/shared/OtpInput/OtpInput";
@@ -83,8 +82,9 @@ const VerifyOTP: FC = () => {
       } else {
         toast.error(response.message || "OTP verification failed.");
       }
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to verify OTP.");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "OTP verification failed.");
     }
   }, [otp, verifyOtp, router]);
 
@@ -101,8 +101,9 @@ const VerifyOTP: FC = () => {
       resetTimer();
       setOtp(Array(OTP_LENGTH).fill(""));
       focusInput(0);
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to resend OTP.");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      toast.error(apiError.data?.message || "OTP resend failed.");
     }
   }, [sendOtp, timeLeft, resetTimer, focusInput]);
 

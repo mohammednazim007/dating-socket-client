@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IResponse, User } from "@/app/types/auth";
+import { IResponse, SignUpData, User } from "@/app/types/auth";
 import { baseQueryWithReauth } from "../../base-query/baseQueryWithReauth";
 import { SignInFormData } from "@/app/lib/schemas/authSchemas";
 
@@ -19,7 +19,7 @@ export const authApi = createApi({
     }),
 
     //** Update user profile */
-    updateProfile: builder.mutation<any, FormData>({
+    updateProfile: builder.mutation<IResponse, FormData>({
       query: (formData) => ({
         url: "/user/profile",
         method: "POST",
@@ -29,7 +29,7 @@ export const authApi = createApi({
     }),
 
     //** Register user */
-    registerUser: builder.mutation<any, any>({
+    registerUser: builder.mutation<IResponse, SignUpData>({
       query: (formData) => ({
         url: "/user/register",
         method: "POST",
@@ -39,7 +39,7 @@ export const authApi = createApi({
     }),
 
     //** Login user */
-    login: builder.mutation<any, SignInFormData>({
+    login: builder.mutation<IResponse, SignInFormData>({
       query: (body) => ({
         url: "/user/login",
         method: "POST",

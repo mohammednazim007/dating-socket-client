@@ -8,9 +8,10 @@ export const getFriends = createAsyncThunk(
       const res = await api.get(`friend/all-friends`);
 
       return res.data;
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
       return rejectWithValue(
-        error.response?.data?.message || "Failed to load chat history"
+        apiError.data?.message || "Failed to load friends"
       );
     }
   }

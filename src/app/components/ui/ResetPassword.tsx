@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import storageEmailLocalStorage from "@/app/utility/storeEmail";
 import { useSendOtpMutation } from "@/app/redux/features/authApi/authApi";
@@ -15,13 +15,14 @@ type ResetFields = {
 
 const ResetPassword: React.FC = () => {
   const [sendOtp, { isLoading }] = useSendOtpMutation();
-  const [rootError, setRootError] = useState<string | null>(null);
+  // const [rootError, setRootError] = useState<string | null>(null);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<ResetFields>({
     resolver: zodResolver(ResetSchema),
     mode: "onSubmit",
@@ -39,8 +40,11 @@ const ResetPassword: React.FC = () => {
         throw new Error(response.message || "Failed to send OTP");
 
       router.push("/auth/verify-otp");
-    } catch (err: any) {
-      setRootError(err.message || "Failed to send OTP");
+    } catch (err: unknown) {
+      const apiError = err as { data?: { message?: string } };
+      setError("root", {
+        message: apiError.data?.message || "Reset password failed",
+      });
     }
   };
 
@@ -53,13 +57,14 @@ const ResetPassword: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <p className="text-sm text-center text-slate-400">
-            Enter your email address and we'll send you a link or code to reset
-            your password.
+            {
+              "Enter your email address and we'll send you a link or code to reset your password."
+            }
           </p>
           {/* Error Alert */}
-          {rootError && (
+          {errors.root && (
             <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400 text-sm mb-4">
-              {rootError}
+              {errors.root.message}
             </div>
           )}
           <div>
