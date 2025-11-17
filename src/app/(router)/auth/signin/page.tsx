@@ -44,8 +44,9 @@ const SignInPage = () => {
         password: data.password,
         rememberMe,
       }).unwrap();
+      console.log("response ", response);
 
-      if (response?.success === true) router.push("/");
+      if (response.success === true) return router.push("/");
     } catch (err: unknown) {
       const apiError = err as { data?: { message?: string } };
       setError("root", {
