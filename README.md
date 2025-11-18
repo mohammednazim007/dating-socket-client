@@ -2,18 +2,32 @@
 
 # Real‑Time Dating App
 
-A production‑ready, Messenger‑style chat built with Next.js 15. It delivers real‑time messaging, presence, notifications, protected routing, and modern UX. The frontend consumes a REST API and connects to a Socket.IO server for live updates.
+A modern, production‑ready chat application built with Next.js 15. It delivers real-time messaging with presence, notifications, and a responsive, Messenger-like UI. Authentication, session refresh, and protected routing are included. The app consumes a backend API and connects to a Socket.IO server for live updates.
+
+## Overview
+
+This project provides a full chat experience similar to Facebook Messenger:
+
+- Sign up, sign in, and secure session management
+- Real‑time one‑to‑one messaging with typing indicators and online status
+- Notification center with unread counts and mark‑as‑read actions
+- Friend discovery and requests (send, accept, reject, cancel)
+- Friend list filter (online, all)
+- Message history loading and pagination
+- Responsive layout optimized for desktop and mobile
+- Clean state management with Redux Toolkit + RTK Query
+- API‑driven data access with automatic token refresh
 
 ## Features
 
-- 🔹 Authentication: sign up, sign in, logout, OTP verification, password reset
-- 🔹 Protected routes with cookie‑based sessions and middleware
-- 🔹 Real‑time one‑to‑one chat using Socket.IO
-- 🔹 Presence: online users, typing indicators
-- 🔹 Notifications: unread badge, mark single/all as read
-- 🔹 Friends: discovery, requests (send/accept/reject/cancel), lists and filters
-- 🔹 Message history loading, emoji support, debounced inputs
-- 🔹 Responsive, accessible UI with Tailwind CSS
+- Authentication: register, login, logout, OTP verification, password reset
+- Protected routes via Next.js middleware and cookie‑based sessions
+- Real‑time messaging using Socket.IO client
+- Presence: online users list and typing indicators
+- Notifications: unread badge, read single/all
+- Friends: non‑friend list, requests, accepted friends
+- Message history loading and UX polish (emoji picker, debounced inputs)
+- Accessible, responsive UI with Tailwind CSS
 
 ## Tech Stack
 
@@ -35,14 +49,14 @@ Path alias: `@/*` → `src/*` (see `tsconfig.json`).
 
 ## Installation
 
-1) Clone the repository
+1. Clone the repository
 
 ```bash
 git clone https://github.com/your-org/frontend-socket-io.git
 cd frontend-socket-io
 ```
 
-2) Install dependencies
+2. Install dependencies
 
 ```bash
 pnpm install
@@ -50,7 +64,7 @@ pnpm install
 npm install
 ```
 
-3) Configure environment
+3. Configure environment
 
 Create `.env.local` in the project root:
 
@@ -59,14 +73,14 @@ NEXT_PUBLIC_BACKEND_URL= http://localhost:4000
 NEXT_PUBLIC_SOCKET_URL= ws://localhost:4000
 ```
 
-4) Run the app in development
+4. Run the app in development
 
 ```bash
 pnpm dev
 # http://localhost:3000
 ```
 
-5) Build and start for production
+5. Build and start for production
 
 ```bash
 pnpm build
@@ -75,21 +89,21 @@ pnpm start
 
 ## Quick Start
 
-1) Install dependencies
+1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-2) Configure `.env.local` as above
+2. Configure `.env.local` as above
 
-3) Start the dev server
+3. Start the dev server
 
 ```bash
 pnpm dev
 ```
 
-4) Open `http://localhost:3000`
+4. Open `http://localhost:3000`
 
 ## Scripts
 
