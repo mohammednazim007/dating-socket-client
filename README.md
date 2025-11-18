@@ -2,9 +2,9 @@
 
 # 💖 Real-Time Dating App Client (Frontend)
 
-A modern, production-ready, real-time chat client built with Next.js 15. This app delivers a Messenger-like user experience with instant messaging, real-time presence, secure sessions, and a highly responsive UI.
+A modern, production-ready, real-time chat client built with Next.js 15. This application delivers a polished, Messenger-like user experience, focusing on instant message delivery, real-time presence, secure session management, and a highly responsive UI.
 
-The frontend connects to a separate Node.js/Express backend API and a dedicated Socket.IO server.
+This repository contains the full frontend code, designed to consume data from a separate Node.js/Express backend API and connect directly to its dedicated Socket.IO server.
 
 ---
 
