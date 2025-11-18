@@ -25,11 +25,17 @@ This project provides a full chat experience similar to Facebook Messenger:
 The client is responsible for the full user experience, session management, and real-time interaction:
 
 -🔒 Secure Sessions: Protected routing handled by Next.js Middleware and secure, cookie-based session management.
+
 -📡 Real-Time Communication: Instant one-to-one messaging, live typing indicators, and online status detection using the Socket.IO client.
+
 -🔔 Notification Center: Real-time push notifications for new messages and friend requests, complete with unread badges and mark-as-read functionality.
+
 -📈 Data Management: Clean, robust state and data fetching using Redux Toolkit + RTK Query. Includes logic for silent, automatic token refresh.
+
 -🎨 Responsive UI: Fully accessible, responsive interface optimized for desktop and mobile, styled exclusively with Tailwind CSS.
+
 -📜 History Loading: Smooth message history loading and pagination within the chat window for an excellent UX.
+
 -🤝 Friend System: UI flows for friend discovery, sending, accepting, rejecting, and canceling friend requests.
 
 ## Tech Stack
