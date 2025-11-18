@@ -48,9 +48,7 @@ api.interceptors.response.use(
 
       try {
         // 🔄 try to refresh token
-        await api.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/refresh-token`
-        );
+        await api.post(`/user/refresh-token`);
 
         processQueue(null);
         return api(originalRequest); // retry the original request
