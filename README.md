@@ -50,7 +50,7 @@ Create a `.env.local` file in the project root with:
 NEXT_PUBLIC_BACKEND_URL=
 
 # Socket.IO server URL (e.g., ws://localhost:4000)
-NEXT_PUBLIC_SOCKET_BACKEND_URL=
+NEXT_PUBLIC_SOCKET_URL=
 ```
 
 ## Installation
@@ -75,7 +75,7 @@ pnpm dev
 ```
 
 - Ensure your backend API is running and reachable via `NEXT_PUBLIC_BACKEND_URL`.
-- Ensure your Socket.IO server is running at `NEXT_PUBLIC_SOCKET_BACKEND_URL`.
+- Ensure your Socket.IO server is running at `NEXT_PUBLIC_SOCKET_URL`.
 
 ## Build and Start
 
