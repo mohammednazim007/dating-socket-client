@@ -1,8 +1,10 @@
 <img width="1392" height="633" alt="messenger" src="https://github.com/user-attachments/assets/0c41b179-ab0d-460e-bbe6-a691454242c9" />
 
-## Real‑Time Dating App
+## 💖 Real-Time Dating App Client (Frontend)
 
-A modern, production‑ready chat application built with Next.js 15. It delivers real-time messaging with presence, notifications, and a responsive, Messenger-like UI. Authentication, session refresh, and protected routing are included. The app consumes a backend API and connects to a Socket.IO server for live updates.
+A modern, production-ready, real-time chat client built with Next.js 15. This application delivers a polished, Messenger-like user experience, focusing on instant message delivery, real-time presence, secure session management, and a highly responsive UI.
+
+This repository contains the full frontend code, designed to consume data from a separate Node.js/Express backend API and connect directly to its dedicated Socket.IO server.
 
 ## Overview
 
@@ -18,16 +20,17 @@ This project provides a full chat experience similar to Facebook Messenger:
 - Clean state management with Redux Toolkit + RTK Query
 - API‑driven data access with automatic token refresh
 
-## Features
+## ✨ Key Features (Client)
 
-- Authentication: register, login, logout, OTP verification, password reset
-- Protected routes via Next.js middleware and cookie‑based sessions
-- Real‑time messaging using Socket.IO client
-- Presence: online users list and typing indicators
-- Notifications: unread badge, read single/all
-- Friends: non‑friend list, requests, accepted friends
-- Message history loading and UX polish (emoji picker, debounced inputs)
-- Accessible, responsive UI with Tailwind CSS
+The client is responsible for the full user experience, session management, and real-time interaction:
+
+-🔒 Secure Sessions: Protected routing handled by Next.js Middleware and secure, cookie-based session management.
+-📡 Real-Time Communication: Instant one-to-one messaging, live typing indicators, and online status detection using the Socket.IO client.
+-🔔 Notification Center: Real-time push notifications for new messages and friend requests, complete with unread badges and mark-as-read functionality.
+-📈 Data Management: Clean, robust state and data fetching using Redux Toolkit + RTK Query. Includes logic for silent, automatic token refresh.
+-🎨 Responsive UI: Fully accessible, responsive interface optimized for desktop and mobile, styled exclusively with Tailwind CSS.
+-📜 History Loading: Smooth message history loading and pagination within the chat window for an excellent UX.
+-🤝 Friend System: UI flows for friend discovery, sending, accepting, rejecting, and canceling friend requests.
 
 ## Tech Stack
 
