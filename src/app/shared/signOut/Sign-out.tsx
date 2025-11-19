@@ -3,21 +3,29 @@ import { useRouter } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
 import { motion } from "motion/react";
 import ButtonIndicator from "../buttonIndicator/ButtonIndicator";
-import { useLogoutMutation } from "@/app/redux/features/authApi/authApi";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import Cookies from "js-cookie";
 
 const SignOutButton = () => {
-  const [logout, { isLoading }] = useLogoutMutation();
+  const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
   // ** sign out handler
-  const signOutHandler = async () => {
+  const signOutHandler = () => {
+    setLoading(true);
+
     try {
-      await logout();
-      router.push("/");
-    } catch (err: unknown) {
-      const apiError = err as { data?: { message?: string } };
-      toast.error(apiError.data?.message || "Logout failed");
+      // ✅ Remove the accessToken cookie
+      Cookies.remove("accessToken");
+
+      toast.success("Signed out successfully!");
+      router.push("/auth/signin");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to sign out");
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,13 +1,11 @@
 // src/app/redux/features/friends/friendApi.ts
 import { IResponse } from "@/app/types/auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithAuth } from "../../base-query/baseQueryWithAuth";
 
 export const friendApi = createApi({
   reducerPath: "friendApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
-    credentials: "include",
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Auth", "User", "Friends"],
 
   endpoints: (builder) => ({

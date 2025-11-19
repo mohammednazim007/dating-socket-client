@@ -55,6 +55,12 @@ export interface IResponse {
   email?: string;
   users?: User[];
 }
+export interface ILoginResponse {
+  success: boolean;
+  message: string;
+  accessToken: string;
+  user: User;
+}
 export interface IOtpVerify {
   email: string;
   otpCode: string;

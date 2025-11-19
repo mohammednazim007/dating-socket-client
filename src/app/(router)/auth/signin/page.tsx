@@ -10,6 +10,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { signInSchema, SignInFormData } from "@/app/lib/schemas/authSchemas";
 import { useLoginMutation } from "@/app/redux/features/authApi/authApi";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
+import Cookies from "js-cookie";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,11 @@ const SignInPage = () => {
     setError,
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
-    defaultValues: { email: rememberedEmail || "", password: "" },
+    defaultValues: {
+      email: rememberedEmail || "",
+      password: "",
+      rememberMe: false,
+    },
   });
 
   // ✅ Handle Sign-in
@@ -42,8 +47,11 @@ const SignInPage = () => {
       const response = await login({
         email: data.email,
         password: data.password,
-        rememberMe,
       }).unwrap();
+
+      // Save token in cookie
+      Cookies.set("accessToken", response.accessToken);
+
       console.log("response ", response);
 
       if (response.success === true) return router.push("/");

@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IResponse, SignUpData, User } from "@/app/types/auth";
-import { baseQueryWithReauth } from "../../base-query/baseQueryWithReauth";
+import { ILoginResponse, IResponse, SignUpData, User } from "@/app/types/auth";
 import { SignInFormData } from "@/app/lib/schemas/authSchemas";
+import { baseQueryWithAuth } from "../../base-query/baseQueryWithAuth";
 
 interface CurrentUser {
   user: User;
@@ -9,7 +9,7 @@ interface CurrentUser {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: baseQueryWithReauth,
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Auth", "User"],
   endpoints: (builder) => ({
     //** Get current user */
@@ -39,7 +39,7 @@ export const authApi = createApi({
     }),
 
     //** Login user */
-    login: builder.mutation<IResponse, SignInFormData>({
+    login: builder.mutation<ILoginResponse, SignInFormData>({
       query: (body) => ({
         url: "/user/login",
         method: "POST",
