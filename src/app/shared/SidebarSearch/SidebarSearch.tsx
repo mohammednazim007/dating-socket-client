@@ -41,4 +41,5 @@ const SidebarSearch = forwardRef<SidebarSearchRef, SidebarSearchProps>(
   }
 );
 
+SidebarSearch.displayName = "SidebarSearch";
 export default SidebarSearch;

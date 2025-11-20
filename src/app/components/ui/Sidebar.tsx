@@ -15,7 +15,6 @@ import { debounce } from "@/app/utility/debounce";
 import { useFilteredFriends } from "@/app/hooks/useFilteredFriends";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
 import { User } from "@/app/types/auth";
-import { Search } from "lucide-react";
 import SidebarSearch, {
   SidebarSearchRef,
 } from "@/app/shared/SidebarSearch/SidebarSearch";

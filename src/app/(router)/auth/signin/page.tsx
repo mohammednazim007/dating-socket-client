@@ -6,22 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { signInSchema, SignInFormData } from "@/app/lib/schemas/authSchemas";
 import { useLoginMutation } from "@/app/redux/features/authApi/authApi";
 import ButtonIndicator from "@/app/shared/buttonIndicator/ButtonIndicator";
 import Cookies from "js-cookie";
 import { AnimatePresence } from "motion/react";
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  ArrowRight,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, CheckCircle2 } from "lucide-react";
 import BackgroundGradient from "@/app/shared/BackgroundGradient/BackgroundGradient";
 
 const SignInPage = () => {
@@ -241,7 +231,7 @@ const SignInPage = () => {
             {/* Footer */}
             <div className="mt-8 text-center">
               <p className="text-sm text-slate-400">
-                Don't have an account?{" "}
+                {`Don't have an account?`}
                 <Link
                   href="/auth/signup"
                   className="text-indigo-400 hover:text-indigo-300"
