@@ -19,9 +19,11 @@ export const useSocket = (userId: string) => {
     const socket = getSocket();
     if (!socket) return;
 
-    // Listen to events
+    //** add message
     const handleNewMessage = (msg: IChatMessage) =>
       dispatch(addNewMessage(msg));
+
+    // ** set online user
     const handleOnlineUsers = (users: string[]) =>
       dispatch(setOnlineUsers(users));
 

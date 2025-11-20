@@ -1,6 +1,5 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
-import { useSocket } from "@/app/hooks/useChatSocket";
 import { useTypingIndicator } from "@/app/hooks/useTypingIndicator";
 import { TypingIndicator } from "@/app/shared/TypingIndicator/TypingIndicator";
 import { fetchChatHistory } from "@/app/utility/fetchChatHistory";
@@ -16,8 +15,7 @@ const MessageArea = () => {
   const dispatch = useAppDispatch();
   const user = data?.user;
 
-  // ** Initialize socket connection
-  useSocket(user?._id || "");
+  // ** Initialize typing indicator
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isTyping] = useTypingIndicator(user?._id, activeUser);
 

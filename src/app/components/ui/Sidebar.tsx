@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks/hooks";
 import UserProfile from "../ui/User-profile";
 import { motion, AnimatePresence } from "motion/react";
 import { setActiveUser } from "@/app/redux/features/user-slice/message-user-slice";
-import FriendList from "@/app/shared/FriendSidebarList/FriendSidebarList";
 import { CiSettings } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import FriendListSkeleton from "@/app/shared/FriendListSkeleton/FriendListSkeleton";
@@ -15,9 +14,11 @@ import { debounce } from "@/app/utility/debounce";
 import { useFilteredFriends } from "@/app/hooks/useFilteredFriends";
 import { useCurrentUserQuery } from "@/app/redux/features/authApi/authApi";
 import { User } from "@/app/types/auth";
+import SidebarFriendList from "@/app/shared/FriendSidebarList/FriendSidebarList";
 import SidebarSearch, {
   SidebarSearchRef,
 } from "@/app/shared/SidebarSearch/SidebarSearch";
+import { useSocket } from "@/app/hooks/useChatSocket";
 interface SidebarProps {
   onClose?: () => void;
 }
@@ -30,6 +31,9 @@ const Sidebar = ({ onClose }: SidebarProps) => {
   const { data: currentUser } = useCurrentUserQuery();
   const { data, isLoading } = useGetAcceptedFriendsQuery();
   const { onlineUsers } = useAppSelector((state) => state.user);
+
+  // ** Initialize socket connection for the current user
+  useSocket(currentUser?.user._id || "");
 
   const dispatch = useAppDispatch();
   const route = useRouter();
@@ -114,8 +118,8 @@ const Sidebar = ({ onClose }: SidebarProps) => {
           {isLoading ? (
             <FriendListSkeleton count={6} />
           ) : activeTab === "chat" ? (
-            filteredFriends?.length ? (
-              <FriendList
+            filteredFriends?.length > 0 ? (
+              <SidebarFriendList
                 friends={filteredFriends}
                 onlineUsers={onlineUsers}
                 onClick={handleClick}

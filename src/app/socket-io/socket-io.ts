@@ -11,7 +11,6 @@ export const connectSocket = (user_id: string): Socket | null => {
     console.warn("⚠️ No user_id provided, socket not connected");
     return null;
   }
-  console.log("socket ", process.env.NEXT_PUBLIC_SOCKET_URL);
 
   if (!socket) {
     socket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string, {
