@@ -39,7 +39,7 @@ const SignUpPage = () => {
     name: keyof SignUpFormData;
     type: string;
     placeholder: string;
-    Icon: any;
+    Icon: React.FC<React.SVGProps<SVGSVGElement>>;
     isPassword?: boolean;
   }> = [
     {
